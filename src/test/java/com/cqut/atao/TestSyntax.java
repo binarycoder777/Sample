@@ -3,6 +3,7 @@ package com.cqut.atao;
 import com.cqut.atao.lexical.Lexer;
 import com.cqut.atao.syntax.TokenList;
 import com.cqut.atao.syntax.strategy.expression.ArithmeticExpression;
+import com.cqut.atao.syntax.strategy.expression.BooleanExpression;
 import com.cqut.atao.syntax.strategy.expression.RelationalExpression;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.token.Token;
@@ -31,6 +32,8 @@ public class TestSyntax {
 
     RelationalExpression relationalExpression = new RelationalExpression();
 
+    BooleanExpression booleanExpression = new BooleanExpression();
+
     @Test
     public void testArithmeticExpression(){
         String text = "a*b+a-b;";
@@ -53,6 +56,20 @@ public class TestSyntax {
         MyTree tree = new MyTree();
         ArrayList<Exception> exceptions = new ArrayList<>();
         relationalExpression.recognition(tree,tokenList,exceptions);
+        tree.print();
+        logger.error(exceptions.toString());
+    }
+
+
+    @Test
+    public void testBooleanExpression(){
+        String text = "(40-20) > 10 || a > b;";
+        lexer.lexicalAnalysis(text);
+        List<Token> tokens = lexer.getTokens();
+        TokenList<Token> tokenList = new TokenList<>(tokens);
+        MyTree tree = new MyTree();
+        ArrayList<Exception> exceptions = new ArrayList<>();
+        booleanExpression.recognition(tree,tokenList,exceptions);
         tree.print();
         logger.error(exceptions.toString());
     }
