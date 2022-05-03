@@ -36,4 +36,17 @@ public class TokenList<T>{
         return tokens.get(index++);
     }
 
+    public T getCurToken(){
+        if (isEnd()) return null;
+        return tokens.get(index);
+    }
+
+    public T getPreToken(){
+        return tokens.get(index-1);
+    }
+
+    public void match(){
+        ++index;
+    }
+
 }
