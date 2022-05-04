@@ -5,7 +5,6 @@ import com.cqut.atao.syntax.TokenList;
 import com.cqut.atao.syntax.strategy.expression.*;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.token.Token;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +19,9 @@ import java.util.List;
  * @Description TODO
  * @createTime 2022年05月02日 16:23:00
  */
-public class TestSyntax {
+public class TestExpression {
 
-    Logger logger = LoggerFactory.getLogger(TestSyntax.class);
+    Logger logger = LoggerFactory.getLogger(TestExpression.class);
 
     private Lexer lexer = new Lexer();
 
@@ -92,15 +91,13 @@ public class TestSyntax {
 
     @Test
     public void testExpressionClient(){
-        String text = "a!=b+";
+        String text = "a+b*(i+c)-d%e;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
         expression.recognition(tree,tokenList,exceptions);
-//        tree = expression.getT();
-//        exceptions = expression.getE();
         tree.print();
         logger.error(exceptions.toString());
     }
