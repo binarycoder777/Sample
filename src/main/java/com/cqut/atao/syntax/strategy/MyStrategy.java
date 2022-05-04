@@ -11,7 +11,7 @@ import java.util.List;
  * @author atao
  * @version 1.0.0
  * @ClassName MyStrategy.java
- * @Description TODO
+ * @Description 策略接口
  * @createTime 2022年05月01日 14:39:00
  */
 public interface MyStrategy {

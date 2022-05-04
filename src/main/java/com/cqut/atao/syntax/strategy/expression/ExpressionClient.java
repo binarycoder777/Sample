@@ -16,7 +16,7 @@ import java.util.List;
  * @author atao
  * @version 1.0.0
  * @ClassName ExpressionClient.java
- * @Description TODO
+ * @Description 表达式
  * @createTime 2022年05月04日 14:24:00
  */
 @Data
@@ -73,5 +73,14 @@ public class ExpressionClient implements Expression{
             e = e4;
             k = k4;
         }
+        tree.setRoot(t.getRoot());
+        tree.setCurNode(t.getCurNode());
+
+        exceptions.clear();
+        Collections.copy(exceptions,e);
+
+        tokens.setIndex(k.getIndex());
+        tokens.setTokens(k.getTokens());
+        tree.traceBack();
     }
 }

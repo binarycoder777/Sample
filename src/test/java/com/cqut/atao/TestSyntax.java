@@ -65,7 +65,7 @@ public class TestSyntax {
 
     @Test
     public void testBooleanExpression(){
-        String text = "(40-20) > 10 || a > b;";
+        String text = "10>b && 20<c;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
@@ -79,7 +79,7 @@ public class TestSyntax {
 
     @Test
     public void testAssignmentExpression(){
-        String text = "(40-20) > 10 || a > b;";
+        String text = "a = 10>b && 20<c;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
@@ -99,8 +99,8 @@ public class TestSyntax {
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
         expression.recognition(tree,tokenList,exceptions);
-        tree = expression.getT();
-        exceptions = expression.getE();
+//        tree = expression.getT();
+//        exceptions = expression.getE();
         tree.print();
         logger.error(exceptions.toString());
     }

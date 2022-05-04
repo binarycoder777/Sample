@@ -1,6 +1,5 @@
 package com.cqut.atao;
 
-import com.cqut.atao.syntax.configuration.LLReader;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +47,6 @@ public class TestReader {
             }
         }
         logger.warn(ans);
-    }
-
-    @Test
-    public void readLL(){
-        List<Map<String, Set<String>>> maps = LLReader.readFirstAndFollow("/Users/weitao/Desktop/面试/项目/compler/src/main/java/com/cqut/atao/syntax/strategy/expression/ArithmeticExpression.txt");
-        logger.warn(maps.get(1).toString());
     }
 
 }

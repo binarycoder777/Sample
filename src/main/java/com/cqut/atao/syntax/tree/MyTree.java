@@ -3,6 +3,7 @@ package com.cqut.atao.syntax.tree;
 import com.cqut.atao.token.Token;
 import com.cqut.atao.util.SerialClone;
 import com.sun.xml.internal.bind.v2.TODO;
+import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.util.Queue;
  * @Description TODO
  * @createTime 2022年05月03日 10:34:00
  */
+@Data
 public class MyTree implements Serializable {
 
     // 根节点

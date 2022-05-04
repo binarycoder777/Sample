@@ -3,7 +3,6 @@ package com.cqut.atao.syntax.strategy.expression;
 
 import com.cqut.atao.exception.ParseException;
 import com.cqut.atao.syntax.TokenList;
-import com.cqut.atao.syntax.configuration.LLReader;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.syntax.tree.TreeNode;
 import com.cqut.atao.token.Token;
@@ -22,22 +21,12 @@ import java.util.Set;
  */
 public class ArithmeticExpression implements Expression{
 
-    // first集
-    private Map<String,Set<String>> first;
 
-    // follow集
-    private Map<String,Set<String>> follow;
 
     public ArithmeticExpression() {
-        load();
+
     }
 
-    // 加载数据到map、first、follow集合中
-    private void load(){
-        List<Map<String, Set<String>>> maps = LLReader.readFirstAndFollow("/Users/weitao/Desktop/面试/项目/compler/src/main/java/com/cqut/atao/syntax/strategy/expression/ArithmeticExpression.txt");
-        first = maps.get(0);
-        follow = maps.get(1);
-    }
 
     @Override
     public void recognition(MyTree tree,TokenList<Token> tokens, List<Exception> exceptions) {
@@ -177,6 +166,8 @@ public class ArithmeticExpression implements Expression{
     private void K(MyTree tree,TokenList<Token> tokens, List<Exception> exceptions) {
         // 待定
         tree.addChild(new TreeNode("K"));
+
+        tree.traceBack();
     }
 
     private void B2(MyTree tree,TokenList<Token> tokens, List<Exception> exceptions) {

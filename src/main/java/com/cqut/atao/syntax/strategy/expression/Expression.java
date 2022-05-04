@@ -11,7 +11,7 @@ import java.util.List;
  * @author atao
  * @version 1.0.0
  * @ClassName Expression.java
- * @Description TODO
+ * @Description 表达式接口
  * @createTime 2022年05月02日 14:09:00
  */
 public interface Expression {

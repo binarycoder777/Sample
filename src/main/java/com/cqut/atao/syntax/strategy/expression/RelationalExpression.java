@@ -12,7 +12,7 @@ import java.util.List;
  * @author atao
  * @version 1.0.0
  * @ClassName RelationalExpression.java
- * @Description TODO
+ * @Description 关系表达式
  * @createTime 2022年05月03日 16:29:00
  */
 public class RelationalExpression implements Expression{

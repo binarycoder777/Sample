@@ -11,7 +11,7 @@ import java.util.List;
  * @author atao
  * @version 1.0.0
  * @ClassName MainStrategy.java
- * @Description TODO
+ * @Description 主入口
  * @createTime 2022年05月01日 14:41:00
  */
 public class MainStrategy implements MyStrategy{

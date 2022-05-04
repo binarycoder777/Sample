@@ -11,7 +11,7 @@ import java.util.List;
  * @author atao
  * @version 1.0.0
  * @ClassName TypeStrategy.java
- * @Description TODO
+ * @Description
  * @createTime 2022年05月01日 14:40:00
  */
 public class TypeStrategy implements MyStrategy{
