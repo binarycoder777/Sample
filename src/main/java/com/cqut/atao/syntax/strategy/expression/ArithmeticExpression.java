@@ -1,26 +1,38 @@
 package com.cqut.atao.syntax.strategy.expression;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.cqut.atao.exception.ParseException;
 import com.cqut.atao.syntax.TokenList;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.syntax.tree.TreeNode;
 import com.cqut.atao.token.Token;
+import org.apache.commons.lang.SerializationUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author atao
  * @version 1.0.0
  * @ClassName ArithmeticExpression.java
- * @Description 算术表达式
+ * @Description 算术表达式（存在循环依赖问题）
  * @createTime 2022年05月02日 13:39:00
  */
 public class ArithmeticExpression implements Expression{
 
+
+    private MyTree t;
+
+    private TokenList<Token> k;
+
+    private List<Exception> e;
+
+
+//    private AssignmentExpression assignmentExpression = new AssignmentExpression();
+//
+//    private BooleanExpression booleanExpression = new BooleanExpression();
+//
+//    private RelationalExpression relationalExpression = new RelationalExpression();
 
 
     public ArithmeticExpression() {
@@ -164,9 +176,40 @@ public class ArithmeticExpression implements Expression{
     }
 
     private void K(MyTree tree,TokenList<Token> tokens, List<Exception> exceptions) {
-        // 待定
         tree.addChild(new TreeNode("K"));
-
+//        MyTree t1 = (MyTree) SerializationUtils.clone(tree);
+//        MyTree t2 = (MyTree) SerializationUtils.clone(tree);
+//        MyTree t3 = (MyTree) SerializationUtils.clone(tree);
+//        TokenList<Token> k1 = (TokenList<Token>) SerializationUtils.clone(tokens);
+//        TokenList<Token> k2 = (TokenList<Token>) SerializationUtils.clone(tokens);
+//        TokenList<Token> k3 = (TokenList<Token>) SerializationUtils.clone(tokens);
+//        List<Exception> e1 = (List<Exception>) JSONObject.parseObject(JSONObject.toJSONBytes(exceptions), List.class);
+//        List<Exception> e2 = (List<Exception>) JSONObject.parseObject(JSONObject.toJSONBytes(exceptions), List.class);
+//        List<Exception> e3 = (List<Exception>) JSONObject.parseObject(JSONObject.toJSONBytes(exceptions), List.class);
+//        assignmentExpression.recognition(t2,k2,e2);
+//        booleanExpression.recognition(t3,k3,e3);
+//        relationalExpression.recognition(t1,k1,e1);
+//        if (k1.getIndex() > k2.getIndex() && k1.getIndex() > k3.getIndex() && e1.size() <= e2.size() && e1.size() <= e3.size()){
+//            t = t1;
+//            e = e1;
+//            k = k1;
+//        }else if (k2.getIndex() > k1.getIndex() && k2.getIndex() > k3.getIndex() && e2.size() <= e1.size() && e2.size() <= e3.size()){
+//            t = t2;
+//            e = e2;
+//            k = k2;
+//        }else{
+//            t = t3;
+//            e = e3;
+//            k = k3;
+//        }
+//        tree.setRoot(t.getRoot());
+//        tree.setCurNode(t.getCurNode());
+//
+//        exceptions.clear();
+//        Collections.copy(exceptions,e);
+//
+//        tokens.setIndex(k.getIndex());
+//        tokens.setTokens(k.getTokens());
         tree.traceBack();
     }
 

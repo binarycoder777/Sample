@@ -98,7 +98,7 @@ public class BooleanExpression implements Expression{
             List<Exception> e2 = (List<Exception>) JSONObject.parseObject(JSONObject.toJSONBytes(exceptions), List.class);
             relationalExpression.recognition(t1,k1,e1);
             arithmeticExpression.recognition(t2,k2,e2);
-            if (e1.size() <= e2.size()){
+            if (e1.size() <= e2.size() && k1.getIndex() > k2.getIndex()){
                 t = t1;
                 e = e1;
                 k = k1;

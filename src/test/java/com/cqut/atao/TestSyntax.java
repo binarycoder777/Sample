@@ -38,7 +38,7 @@ public class TestSyntax {
 
     @Test
     public void testArithmeticExpression(){
-        String text = "a=10;";
+        String text = "b > c;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
@@ -92,7 +92,7 @@ public class TestSyntax {
 
     @Test
     public void testExpressionClient(){
-        String text = "a!=b;";
+        String text = "a!=b+";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
