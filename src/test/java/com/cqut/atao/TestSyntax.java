@@ -2,10 +2,7 @@ package com.cqut.atao;
 
 import com.cqut.atao.lexical.Lexer;
 import com.cqut.atao.syntax.TokenList;
-import com.cqut.atao.syntax.strategy.expression.ArithmeticExpression;
-import com.cqut.atao.syntax.strategy.expression.AssignmentExpression;
-import com.cqut.atao.syntax.strategy.expression.BooleanExpression;
-import com.cqut.atao.syntax.strategy.expression.RelationalExpression;
+import com.cqut.atao.syntax.strategy.expression.*;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.token.Token;
 import org.junit.Before;
@@ -37,9 +34,11 @@ public class TestSyntax {
 
     AssignmentExpression assignmentExpression = new AssignmentExpression();
 
+    ExpressionClient expression = new ExpressionClient();
+
     @Test
     public void testArithmeticExpression(){
-        String text = "a*b+a-b;";
+        String text = "a=10;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
@@ -80,13 +79,28 @@ public class TestSyntax {
 
     @Test
     public void testAssignmentExpression(){
-        String text = "";
+        String text = "(40-20) > 10 || a > b;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         ArrayList<Exception> exceptions = new ArrayList<>();
         assignmentExpression.recognition(tree,tokenList,exceptions);
+        tree.print();
+        logger.error(exceptions.toString());
+    }
+
+    @Test
+    public void testExpressionClient(){
+        String text = "a!=b;";
+        lexer.lexicalAnalysis(text);
+        List<Token> tokens = lexer.getTokens();
+        TokenList<Token> tokenList = new TokenList<>(tokens);
+        MyTree tree = new MyTree();
+        List<Exception> exceptions = new ArrayList<>();
+        expression.recognition(tree,tokenList,exceptions);
+        tree = expression.getT();
+        exceptions = expression.getE();
         tree.print();
         logger.error(exceptions.toString());
     }
