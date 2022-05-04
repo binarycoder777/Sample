@@ -201,7 +201,7 @@ public class OperatorStrategy implements MyStrategy {
     protected int state9(Line line){
         if (line.isEnd()) return -1;
         char c = line.getCurChar();
-        if (c == '=' || ChainBlank.judgeChar(c)){
+        if (c == '='){
             line.addChar();
             return 2;
         }else if (c == '+'){
@@ -355,6 +355,7 @@ public class OperatorStrategy implements MyStrategy {
     }
 
     protected void state23(Line line){
+        state3(line);
         line.addException(new ParseException(line.getToken()));
     }
 
