@@ -56,15 +56,15 @@ public class ExpressionClient implements Expression{
         assignmentExpression.recognition(t2,k2,e2);
         booleanExpression.recognition(t3,k3,e3);
         relationalExpression.recognition(t4,k4,e4);
-        if (k1.getIndex() > k2.getIndex() && k1.getIndex() > k3.getIndex() && k1.getIndex() > k4.getIndex() && e1.size() <= e2.size() && e1.size() <= e3.size() && e1.size() <= e4.size()){
+        if (k1.getIndex() >= k2.getIndex() && k1.getIndex() >= k3.getIndex() && k1.getIndex() >= k4.getIndex() && e1.size() <= e2.size() && e1.size() <= e3.size() && e1.size() <= e4.size()){
             t = t1;
             e = e1;
             k = k1;
-        }else if (k2.getIndex() > k1.getIndex() && k2.getIndex() > k3.getIndex() && k2.getIndex() > k4.getIndex() && e2.size() <= e1.size() && e2.size() <= e3.size() && e2.size() <= e4.size()){
+        }else if (k2.getIndex() >= k1.getIndex() && k2.getIndex() >= k3.getIndex() && k2.getIndex() >= k4.getIndex() && e2.size() <= e1.size() && e2.size() <= e3.size() && e2.size() <= e4.size()){
             t = t2;
             e = e2;
             k = k2;
-        }else if (k3.getIndex() > k2.getIndex() && k3.getIndex() > k1.getIndex() && k3.getIndex() > k4.getIndex() && e3.size() <= e1.size() && e3.size() <= e2.size() && e3.size() <= e4.size()){
+        }else if (k3.getIndex() >= k2.getIndex() && k3.getIndex() >= k1.getIndex() && k3.getIndex() >= k4.getIndex() && e3.size() <= e1.size() && e3.size() <= e2.size() && e3.size() <= e4.size()){
             t = t3;
             e = e3;
             k = k3;

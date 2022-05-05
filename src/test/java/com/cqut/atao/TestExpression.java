@@ -37,7 +37,7 @@ public class TestExpression {
 
     @Test
     public void testArithmeticExpression(){
-        String text = "b > c;";
+        String text = "c_global = 2;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
@@ -78,7 +78,7 @@ public class TestExpression {
 
     @Test
     public void testAssignmentExpression(){
-        String text = "a = 10>b && 20<c;";
+        String text = "c_global = 2;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
@@ -91,7 +91,7 @@ public class TestExpression {
 
     @Test
     public void testExpressionClient(){
-        String text = "a+b*(i+c)-d%e;";
+        String text = "c_global = 2;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);

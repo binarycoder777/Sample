@@ -68,11 +68,11 @@ public class AssignmentExpression implements Expression{
                 arithmeticExpression.recognition(t1,k1,e1);
                 booleanExpression.recognition(t3,k3,e3);
                 relationalExpression.recognition(t4,k4,e4);
-                if (e1.size() <= e3.size() && e1.size() <= e4.size() && k1.getIndex() > k3.getIndex() && k1.getIndex() > k4.getIndex()){
+                if (e1.size() <= e3.size() && e1.size() <= e4.size() && k1.getIndex() >= k3.getIndex() && k1.getIndex() >= k4.getIndex()){
                     t = t1;
                     e = e1;
                     k = k1;
-                }else if (e3.size() <= e1.size() && e3.size() <= e4.size() && k3.getIndex() > k1.getIndex() && k3.getIndex() > k4.getIndex()){
+                }else if (e3.size() <= e1.size() && e3.size() <= e4.size() && k3.getIndex() >= k1.getIndex() && k3.getIndex() >= k4.getIndex()){
                     t = t3;
                     e = e3;
                     k = k3;

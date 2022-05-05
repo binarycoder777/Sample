@@ -28,7 +28,7 @@ private 126
 protected 127
 public 128
 abstract 129
-final 130
+const 130
 static 131
 synchronized 132
 extends 133

@@ -56,12 +56,12 @@ A -> C | D
 
 C ->const e F
 F->g=hF'
-F'->,g=hF''
+F'->,g=hF''|;
 F''->F'|;
 
 D -> i J
 J -> KJ'
-J'->,KJ''
+J'->,KJ''|;
 J''->J'|;
 K -> lK'
 K' ->=mK'|空
@@ -69,7 +69,7 @@ K' ->=mK'|空
 B -> n g (O)
 O -> P|空
 P -> iP'
-P'->,iP'|空
+P'->,iP'| 空
 ### First集和Follow集
 First(S)->{const,i,n,空}
 Follow(S)->{#}

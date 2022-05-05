@@ -1,0 +1,43 @@
+package com.cqut.atao;
+
+import com.cqut.atao.lexical.Lexer;
+import com.cqut.atao.syntax.TokenList;
+import com.cqut.atao.syntax.strategy.statement.DeclarativeStatement;
+import com.cqut.atao.syntax.tree.MyTree;
+import com.cqut.atao.token.Token;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author atao
+ * @version 1.0.0
+ * @ClassName TestStatement.java
+ * @Description TODO
+ * @createTime 2022年05月05日 18:11:00
+ */
+public class TestStatement {
+
+    Logger logger = LoggerFactory.getLogger(TestStatement.class);
+
+    private Lexer lexer = new Lexer();
+
+    private DeclarativeStatement declarativeStatement = new DeclarativeStatement();
+
+    @Test
+    public void testA(){
+        String text = "int d_global = 3;";
+        lexer.lexicalAnalysis(text);
+        List<Token> tokens = lexer.getTokens();
+        TokenList<Token> tokenList = new TokenList<>(tokens);
+        MyTree tree = new MyTree();
+        List<Exception> exceptions = new ArrayList<>();
+        declarativeStatement.recognition(tree,tokenList,exceptions);
+        tree.print();
+        logger.error(exceptions.toString());
+    }
+
+}
