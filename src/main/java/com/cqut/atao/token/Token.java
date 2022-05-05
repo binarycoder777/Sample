@@ -1,6 +1,8 @@
 package com.cqut.atao.token;
 
 import lombok.Data;
+
+import java.io.Serializable;
 import java.lang.String;
 import java.lang.Integer;
 
@@ -12,7 +14,7 @@ import java.lang.Integer;
  * @createTime 2022年04月18日 22:32:00
  */
 @Data
-public class Token {
+public class Token implements Serializable {
 
     // token值
     private StringBuilder val;
@@ -25,6 +27,9 @@ public class Token {
 
     // 行号
     private Integer line;
+
+    public Token() {
+    }
 
     public Token(Integer line) {
         this.val = new StringBuilder();
