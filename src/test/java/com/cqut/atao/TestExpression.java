@@ -91,7 +91,7 @@ public class TestExpression {
 
     @Test
     public void testExpressionClient(){
-        String text = "c_global = 2;";
+        String text = "a = 10;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
