@@ -50,7 +50,7 @@ public class TestExpression {
 
     @Test
     public void testRelationalExpression(){
-        String text = "a!=b;";
+        String text = "10 > 20";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
@@ -64,7 +64,7 @@ public class TestExpression {
 
     @Test
     public void testBooleanExpression(){
-        String text = "10>b && 20<c;";
+        String text = "a>10;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
@@ -91,7 +91,7 @@ public class TestExpression {
 
     @Test
     public void testExpressionClient(){
-        String text = "a = 10;";
+        String text = "10 > 20";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);

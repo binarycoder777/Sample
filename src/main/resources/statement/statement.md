@@ -68,7 +68,7 @@ Q -> S | G | H | I | J | break; | continue;
 S -> if (M) N | if (M) N else N
 
 ### LL(1)文法
-S -> A | B | C
+Z -> A | B | C
 
 A -> d; | e;
 
@@ -94,3 +94,32 @@ R' -> R | 空
 Q -> S | G | H | I | J | break; | continue;
 S -> if (M) N S'
 S' -> else N | 空
+### First集和Follow集
+Fisrt(Z) -> {d,e}
+First(A) -> {d,e}
+First(B)->{if,for,while,do,return}
+
+First(C) -> {L}
+First(K) -> {L}
+First(K') -> {L，空}
+Follow(K')->Follow(Z)->{#}
+First(F) -> {if}
+First(F') -> {else,空}
+Follow(F')->Follow(Z)->{#}
+First(G)->{for}
+First(H)->{while}
+First(I)->{do}
+First(J)->{return}
+First(J')->{;,M}
+
+First(N)->{V,Q,{}
+
+First(O)->{{}
+First(R)->{N}
+First(R')->{R,空}
+Follow(R')->{}}
+
+First(Q)->{if,for,while,do,return,break,continue}
+First(S)->{if}
+First(S')->{else,空}
+Follow(S')->Follow(Z)->{#}

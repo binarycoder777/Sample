@@ -3,6 +3,7 @@ package com.cqut.atao;
 import com.cqut.atao.lexical.Lexer;
 import com.cqut.atao.syntax.TokenList;
 import com.cqut.atao.syntax.strategy.statement.DeclarativeStatement;
+import com.cqut.atao.syntax.strategy.statement.ExecuteStatement;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.token.Token;
 import org.junit.Test;
@@ -27,8 +28,10 @@ public class TestStatement {
 
     private DeclarativeStatement declarativeStatement = new DeclarativeStatement();
 
+    private ExecuteStatement executeStatement = new ExecuteStatement();
+
     @Test
-    public void testA(){
+    public void testDeclarativeStatement(){
         String text = "int d_global = 3;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
@@ -36,6 +39,19 @@ public class TestStatement {
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
         declarativeStatement.recognition(tree,tokenList,exceptions);
+        tree.print();
+        logger.error(exceptions.toString());
+    }
+
+    @Test
+    public void testExecuteStatement(){
+        String text = "while(10>20) break;";
+        lexer.lexicalAnalysis(text);
+        List<Token> tokens = lexer.getTokens();
+        TokenList<Token> tokenList = new TokenList<>(tokens);
+        MyTree tree = new MyTree();
+        List<Exception> exceptions = new ArrayList<>();
+        executeStatement.recognition(tree,tokenList,exceptions);
         tree.print();
         logger.error(exceptions.toString());
     }
