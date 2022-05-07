@@ -37,7 +37,8 @@ public class TestExpression {
 
     @Test
     public void testArithmeticExpression(){
-        String text = "c_global = 2;";
+        String text = "a+b*(10-c)/d+20%e";
+//        String text = "a+b";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);

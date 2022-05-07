@@ -45,7 +45,7 @@ public class TestStatement {
 
     @Test
     public void testExecuteStatement(){
-        String text = "while(10>20) break;";
+        String text = "while(10!=20) break;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);

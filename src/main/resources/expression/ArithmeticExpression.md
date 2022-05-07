@@ -31,18 +31,17 @@ I -> J | 空
 J -> K | K,J
 ### 转化为LL（1）文法
 S -> AS'
-S' -> +AS' | -AS' | 空
+S' -> +S | -S | 空
 A -> BA'
-A' -> *BA' | /BA' | %BA' | 空
-B -> f | g | hB' | (B''A'S')
+A' -> *A | /A | %A | 空
+B -> f | g | hB' | (S)
 B' -> (I) | 空
-B'' -> (B''A'S') | f | g | hB'
 C -> f | g
 D -> h
 E -> h(I) 
 I -> J | 空
 J -> KJ'
-J' -> ,KJ' | 空
+J' -> ,J | 空
 ### First集和Follow集
 First(S)->{f,g,h,(}
 Follow(S)->{#,)}
@@ -51,19 +50,16 @@ First(S')->{+,-,空}
 Follow(S')->Follow(S)->{#,)}
 
 First(A)->{f,g,h,(}
-Follow(A)->Follow(S')->{#,)}
+Follow(A)->First(S')并Follow(S)->{+,-,),#}
 
 First(A')->{*,/,%,空}
-Follow(A')->Follow(A)并First(S')->{#,),+,-}
+Follow(A')->Follow(A)->{+,-,),#}
 
 First(B)->{f,g,h,(}
-Follow(B)->First(A')->{*,/,%}
+Follow(B)->First(A')并Follow(A)->{+,-,),*,/,%}
 
 First(B')->{(,空}
-Follow(B')->Follow(B)并Follow(B'')->{*,/,%,}
-
-First(B'')->{(,f,g,h}
-Follow(B'')->First(A')->{*,/,%}
+Follow(B')->Follow(B)->{+,-,),*,/,%}
 
 First(C)->{f,g}
 
@@ -75,22 +71,9 @@ First(E)->{h}
 - Follow(I)->{)}
 
 - First(J)->{First(K)}
+- Follow(J)->Follow(I)->{)}
 
 - First(J')->{,,空}
-- Follow(J')->Follow(J)->Follow(I)->{)}
+- Follow(J')->Follow(J)->{)}
 
 - First(K)->{待定}
-### 表达式的LL(1)文法
-S -> AS'
-S' -> +AS' | -AS' | 空
-A -> BA'
-A' -> *BA' | /BA' | %BA' | 空
-B -> f | g | hB' | (B''A'S')
-B' -> (I) | 空
-B'' -> (B''A'S') | f | g | hB'
-C -> f | g
-D -> h
-E -> h(I) 
-I -> J | 空
-J -> KJ'
-J' -> ,KJ' | 空
