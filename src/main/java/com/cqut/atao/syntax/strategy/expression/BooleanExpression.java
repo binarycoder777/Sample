@@ -35,9 +35,36 @@ public class BooleanExpression implements Expression{
         A(tree,tokens,exceptions);
     }
 
+    private void pass(){
+        return;
+    }
+
     private void A(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
         tree.addChild(new TreeNode("布尔表达式"));
         B(tree,tokens,exceptions);
+        A1(tree,tokens,exceptions);
+        tree.traceBack();
+    }
+
+    private void A1(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
+        tree.addChild(new TreeNode("A1"));
+        Token token = tokens.getCurToken();
+        if (token!=null && "||".equals(token.getType())){
+            tree.addChild(new TreeNode(token.getVal().toString()));
+            tokens.match();
+            tree.traceBack();
+            A(tree,tokens,exceptions);
+        }else if (token != null && ("&&".equals(token.getType()))){
+            pass();
+        } else if (token != null){
+            exceptions.add(new ParseException("布尔表达式：Grammar mistakes",tokens.getPreToken()));
+        }
+        tree.traceBack();
+    }
+
+    private void B(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
+        tree.addChild(new TreeNode("布尔项"));
+        C(tree,tokens,exceptions);
         B1(tree,tokens,exceptions);
         tree.traceBack();
     }
@@ -45,79 +72,51 @@ public class BooleanExpression implements Expression{
     private void B1(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
         tree.addChild(new TreeNode("B1"));
         Token token = tokens.getCurToken();
-        if (token!=null && "||".equals(token.getType())){
-            tree.addChild(new TreeNode(token.getType()));
-            tokens.match();
-            tree.traceBack();
-            B(tree,tokens,exceptions);
-            B1(tree,tokens,exceptions);
-        }else if (token == null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
-        }
-        tree.traceBack();
-    }
-
-    private void B(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("B"));
-        C(tree,tokens,exceptions);
-        B2(tree,tokens,exceptions);
-        tree.traceBack();
-    }
-
-    private void B2(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("B2"));
-        Token token = tokens.getCurToken();
         if (token!=null && "&&".equals(token.getType())){
             tree.addChild(new TreeNode(token.getType()));
             tokens.match();
             tree.traceBack();
             B(tree,tokens,exceptions);
-            B2(tree,tokens,exceptions);
-        }else if (token == null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+        }else if(token != null && "||".equals(token.getType())){
+            pass();
+        }else if (token != null){
+            exceptions.add(new ParseException("布尔表达式: Grammar mistakes",tokens.getPreToken()));
         }
         tree.traceBack();
     }
 
 
     private void C(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("C"));
+        tree.addChild(new TreeNode("布尔因子"));
         Token token = tokens.getCurToken();
         if (token!=null && "!".equals(token.getType())){
             tree.addChild(new TreeNode(token.getType()));
             tokens.match();
             tree.traceBack();
             A(tree,tokens,exceptions);
+        }else if (token != null && ("(".equals(token.getType()) || "实数".equals(token.getType()) || "整数".equals(token.getType())||"字符".equals(token.getType())||"标识符".equals(token.getType()))){
+            arithmeticExpression.recognition(tree, tokens, exceptions);
+            C1(tree,tokens,exceptions);
         }else if (token != null){
-            // 算术表达式和关系表达式
-            MyTree t1 = (MyTree) SerializationUtils.clone(tree);
-            MyTree t2 = (MyTree) SerializationUtils.clone(tree);
-            TokenList<Token> k1 = (TokenList<Token>) SerializationUtils.clone(tokens);
-            TokenList<Token> k2 = (TokenList<Token>) SerializationUtils.clone(tokens);
-            List<Exception> e1 = (List<Exception>) JSONObject.parseObject(JSONObject.toJSONBytes(exceptions), List.class);
-            List<Exception> e2 = (List<Exception>) JSONObject.parseObject(JSONObject.toJSONBytes(exceptions), List.class);
-            relationalExpression.recognition(t1,k1,e1);
-            arithmeticExpression.recognition(t2,k2,e2);
-            if (e1.size() <= e2.size() && k1.getIndex() > k2.getIndex()){
-                t = t1;
-                e = e1;
-                k = k1;
-            }else{
-                t = t2;
-                e = e2;
-                k = k2;
-            }
-            tree.setRoot(t.getRoot());
-            tree.setCurNode(t.getCurNode());
-
-            exceptions.clear();
-            exceptions.addAll(e);
-
-            tokens.setIndex(k.getIndex());
-            tokens.setTokens(k.getTokens());
-        }else {
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("布尔表达式:Grammar mistakes",tokens.getPreToken()));
         }
         tree.traceBack();
     }
+
+    private void C1(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
+        tree.addChild(new TreeNode("C1"));
+        Token token = tokens.getCurToken();
+        if (token != null && (">".equals(token.getType()) || "<".equals(token.getType())|| ">=".equals(token.getType()) || "<=".equals(token.getType()) || "==".equals(token.getType()) || "!=".equals(token.getType()))){
+            tree.addChild(new TreeNode(token.getVal().toString()));
+            tokens.match();
+            tree.traceBack();
+            arithmeticExpression.recognition(tree, tokens, exceptions);
+        }else if (token != null && ("&&".equals(token.getType()) || "||".equals(token.getType()))){
+            pass();
+        }else if (token != null){
+            exceptions.add(new ParseException("布尔表达式:Grammar mistakes",tokens.getPreToken()));
+        }
+        tree.traceBack();
+    }
+
 }

@@ -15,7 +15,7 @@ import java.util.List;
  * @author atao
  * @version 1.0.0
  * @ClassName AssignmentExpression.java
- * @Description 算术表达式
+ * @Description 赋值表达式
  * @createTime 2022年05月03日 17:43:00
  */
 public class AssignmentExpression implements Expression{

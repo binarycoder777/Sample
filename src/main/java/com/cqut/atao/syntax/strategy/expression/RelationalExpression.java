@@ -21,29 +21,39 @@ public class RelationalExpression implements Expression{
 
     @Override
     public void recognition(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        A(tree,tokens,exceptions);
+        Token token = tokens.getCurToken();
+        if (token != null && ("(".equals(token.getType()) || "实数".equals(token.getType()) || "整数".equals(token.getType())||"字符".equals(token.getType())||"标识符".equals(token.getType()))){
+            A(tree,tokens,exceptions);
+        }else {
+            pass();
+        }
+    }
+
+    private void pass(){
+        return;
     }
 
     private void A(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
         tree.addChild(new TreeNode("关系表达式"));
         Token token = tokens.getCurToken();
-        if (token != null){
-            tree.addChild(new TreeNode("算术表达式"));
+        if (token != null && ("(".equals(token.getType()) || "实数".equals(token.getType()) || "整数".equals(token.getType())||"字符".equals(token.getType())||"标识符".equals(token.getType()))){
             arithmeticExpression.recognition(tree,tokens,exceptions);
-            tree.traceBack();
             token = tokens.getCurToken();
             if (token != null && (">".equals(token.getType()) || "<".equals(token.getType())|| ">=".equals(token.getType()) || "<=".equals(token.getType()) || "==".equals(token.getType()) || "!=".equals(token.getType()))){
                 tree.addChild(new TreeNode(token.getType()));
                 tokens.match();
                 tree.traceBack();
-            }else {
+            }else if (token != null){
                 exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
             }
-            tree.addChild(new TreeNode("算术表达式"));
-            arithmeticExpression.recognition(tree,tokens,exceptions);
-            tree.traceBack();
-        }else {
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            token = tokens.getCurToken();
+            if (token != null && ("(".equals(token.getType()) || "实数".equals(token.getType()) || "整数".equals(token.getType())||"字符".equals(token.getType())||"标识符".equals(token.getType()))){
+                arithmeticExpression.recognition(tree,tokens,exceptions);
+            }else if (token != null){
+                exceptions.add(new ParseException("关系表达式:Grammar mistakes",tokens.getPreToken()));
+            }
+        }else if (token != null){
+            exceptions.add(new ParseException("关系表达式:Grammar mistakes",tokens.getPreToken()));
         }
         tree.traceBack();
     }
