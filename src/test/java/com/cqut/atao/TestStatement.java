@@ -35,7 +35,8 @@ public class TestStatement {
 
     @Test
     public void testDeclarativeStatement(){
-        String text = "int d_global = 3;";
+        String text = "const int b_global = 3;";
+//        String text = "void hello(int,float);";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);

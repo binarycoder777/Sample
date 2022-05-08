@@ -8,12 +8,12 @@
 常量声明列表			F
 标识符			    g
 常量			        h
-变量类型			    i
+变量类型			    e
 变量声明表			J
 单体变量声明			K
-变量			        l
+变量			        g
 表达式			    m
-函数类型			    n
+函数类型			    e
 函数声明形参列表		O
 函数声明形参			P
 ### 产生式
@@ -38,58 +38,67 @@ S -> A | B | 空
 A -> C | D
 
 C -> const e F
-e -> int | char | float
 F -> g=h; | g=h,F
 
-D -> i J
+D -> e J
 J -> K; | K,J
-K -> l | l=m
-i -> int | float | char | void
+K -> g | g=m
 
-B -> n g (O)
-n -> int | float | char | void
+B -> e g (O)
 O -> P | 空
-P -> i | i,P
+P -> e | e,P
 ### LL(1)文法
-S -> A | B | 空
-A -> C | D
+S -> e S' | C | 空
+S' -> g S''   
+S'' -> (O) | =KJ' | ,J | ;
 
 C ->const e F
 F->g=hF'
-F'->,g=hF''|;
-F''->F'|;
+F'->,F|;
 
-D -> i J
+D -> e J
 J -> KJ'
-J'->,KJ''|;
-J''->J'|;
-K -> lK'
-K' ->=mK'|空
+J'->,J|;
+K -> gK'
+K' ->=m|空
 
-B -> n g (O)
+B -> e g (O)
 O -> P|空
-P -> iP'
-P'->,iP'| 空
+P -> eP'
+P'->,P| 空
 ### First集和Follow集
-First(S)->{const,i,n,空}
+First(S)->{const,e,空}
 Follow(S)->{#}
-First(A)->{const,i}
+
+First(S')->{g}
+
+First(S'')->{,,(,=,;}
+
 First(C)->{const}
+
 First(F)->{g}
-First(F')->{,}
-First(F'')->{,,;}
-First(D)->{i}
-Fisrt(J)->{l}
-First(J')->{,}
-Fisrt(J'')->{,,;}
-First(K)->{l}
-Follow(K)->First(J')并First(J'')->{,,;}
+
+First(F')->{,,;}
+
+First(D)->{e}
+
+Fisrt(J)->{g}
+
+First(J')->{,,;}
+
+First(K)->{g}
+Follow(K)->First(J')->{,,;}
+
 First(K')->{=,空}
 Follow(K')->Follow(K)->{,,;}
-First(B)->{n}
-Fisrt(O)->{i,空}
+
+First(B)->{e}
+
+Fisrt(O)->{e,空}
 Follow(O)->{)}
-First(P)->{i}
+
+First(P)->{e}
 Follow(P)->Follow(O)->{)}
+
 First(P')->{,,空}
 Folow(P')->Follow(P)->{)}
