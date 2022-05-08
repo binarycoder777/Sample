@@ -495,4 +495,26 @@ Follow(E')->Follow(E)->{)}
 #-----------------------------------------程序-------------------------------------------------------------------
 <程序> -> <声明语句> main() <复合语句> <函数块>
 <函数块> -> <函数定义> <函数块> | 空
+## 符号
+程序		    S
+声明语句		A
+复合语句		B
+函数块		C
+函数定义		D
+## 化简
+S -> A main() B C
+C -> D C | 空
+## LL(1)文法
+S -> A mian() B C
+C -> D C'
+C' -> C | 空
+## First集和Follow集
+// e -> {int,char,float,void}
+First(S) -> {const,e,空}
+Follow(S)->{#}
 
+First(C)->First(D)->{void,int,char,float}
+Follow(C)->Follow(S)->{#}
+
+First(C')->{void,int,char,float,空}
+Follow(C')->Follow(C)->{#}
