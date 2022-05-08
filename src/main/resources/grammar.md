@@ -362,7 +362,7 @@ Folow(P')->Follow(P)->{)}
 Z -> A | B | C
 A -> d;
 B -> F | G | H | I | J
-C -> K
+C -> {K}
 K -> L | L K
 F -> if (d) L | if (d) L else L
 G -> for (d;d;d) N
@@ -382,7 +382,7 @@ Z -> d; | B | C
 
 B -> F | G | H | I | J
 
-C -> K
+C -> {K}
 K -> LK'
 K' -> K | 空
 F -> if(d)L F'
@@ -407,31 +407,30 @@ S' -> else N | 空
 // L -> d; | B | v | LK'
 L -> d; | B | v | L'K'
 L' -> d; | B | v | L
-// First(C)->First(声明语句)并First(执行语句)
 // First(执行语句)->{const,e,空}
 // d -> {实数、整数、字符、标识符、（、!}
 // e -> {void,int,char,float}
-Fisrt(Z) -> {d,e,if,for,while,do,return,const,空}
-Follow(Z)->Follow(F')并First(F')并Follow(F)并Follow(K)并First(K')->{else,const,e}
+// v -> {e,const,空}
+Fisrt(Z) -> {d,if,for,while,do,return,{}
+Follow(Z)->Follow(F')并First(F')并Follow(F)并Follow(K)并First(K')->{else,d,if,for,while,do,return,{，e,const,空,}}
 
 First(B)->{if,for,while,do,return}
-Follow(B)->Follow(Z)->{else,const,e}
+Follow(B)->Follow(Z)->{else,d,if,for,while,do,return,{，e,const,空,}}
 
-First(C) -> {const,e,空}
-Follow(C)->Follow(Z)->{else,const,e}
+First(C) -> {{}
+Follow(C)->Follow(Z)->{else,d,if,for,while,do,return,{，e,const,空,}}
 
-First(K) -> {const,e,空}
-Follow(K)->Follow(K')并Follow(C)->{else,const,e}
+First(K) -> {d,if,for,while,do,return,{，e,const,空}
+Follow(K)->Follow(K')并Follow(C)并{}}->{else,}}
 
-First(K') -> {const,e，空}
-Follow(K')->Follow(K)->{else,const,e}
-
+First(K') -> {d,if,for,while,do,return,{，e,const,空}
+Follow(K')->Follow(K)->{else,d,if,for,while,do,return,{，e,const,空,}}
 
 First(F) -> {if}
-Follow(F)->Follow(B)->{else,const,e}
+Follow(F)->Follow(B)->{else,d,if,for,while,do,return,{，e,const,空,}}
 
 First(F') -> {else,空}
-Follow(F')->Follow(F)->{else,const,e}
+Follow(F')->Follow(F)->{else,d,if,for,while,do,return,{，e,const,空,}}
 
 First(G)->{for}
 First(H)->{while}
@@ -464,6 +463,36 @@ Follow(S')->Follow(S)->{},const,e,空,if,for,while,do,return,break,continue,{,el
 <函数定义> -> <函数类型> <标识符> (<函数定义参数列表>) <复合语句>
 <函数定义参数列表> -> <函数定义形参> | 空
 <函数定义形参> -> <变量类型> <标识符> | <变量类型> <标识符>,<函数定义形参>
+## 符号
+函数定义			        S
+函数类型			        a
+标识符			        b
+函数定义参数列表			C
+复合语句			        d
+函数定义形参			    E
+变量类型			        f
+## 化简
+// a -> {void,int,char,float}
+// b -> 标识符
+// f -> {int,char,float}
+// d -> 复合语句
+S -> a b (C) d
+C -> E | 空
+E -> f b | f b,E
+## LL(1)文法
+S -> a b (C) d
+C -> E | 空
+E -> f b E'
+E' -> ,E | 空
+## First集和Follow集
+First(S) -> {void,int,char,float}
+First(C) -> {int,char,float,空}
+Follow(C) -> {)}
+First(E)->{int,char,float}
+Follow(E)->Follow(C)->{)}
+First(E')->{,,空}
+Follow(E')->Follow(E)->{)}
 #-----------------------------------------程序-------------------------------------------------------------------
 <程序> -> <声明语句> main() <复合语句> <函数块>
 <函数块> -> <函数定义> <函数块> | 空
+

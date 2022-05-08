@@ -24,8 +24,6 @@ import java.util.List;
  */
 public class ExecuteStatement implements Expression {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
     DeclarativeStatement declarativeStatement = new DeclarativeStatement();
 
     ExpressionStatement expressionStatement = new ExpressionStatement();
@@ -42,12 +40,23 @@ public class ExecuteStatement implements Expression {
     }
 
     private void Z(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("Z"));
+        tree.addChild(new TreeNode("执行语句"));
         Token token = tokens.getCurToken();
         if (token != null && ("if".equals(token.getType()) || "for".equals(token.getType()) || "while".equals(token.getType()) || "do".equals(token.getType()) || "return".equals(token.getType()))) {
             B(tree, tokens, exceptions);
-        } else if (token != null && ("void".equals(token.getType()) || "int".equals(token.getType()) || "float".equals(token.getType()) || "char".equals(token.getType()))) {
-            C(tree, tokens, exceptions);
+        } else if (token != null && "{".equals(token.getType())) {
+            tree.addChild(new TreeNode(token.getVal().toString()));
+            tokens.match();
+            tree.traceBack();
+            K(tree, tokens, exceptions);
+            token = tokens.getCurToken();
+            if (token != null && "}".equals(token.getType())){
+                tree.addChild(new TreeNode(token.getVal().toString()));
+                tokens.match();
+                tree.traceBack();
+            }else if (token != null){
+                exceptions.add(new ParseException("Grammar mistakes", tokens.getPreToken()));
+            }
         } else if (token != null && ("实数".equals(token.getType()) || "整数".equals(token.getType()) || "字符".equals(token.getType()) || "标识符".equals(token.getType()) || "(".equals(token.getType()) || "!".equals(token.getType()))) {
             expressionStatement.recognition(tree, tokens, exceptions);
             token = tokens.getCurToken();
@@ -55,7 +64,7 @@ public class ExecuteStatement implements Expression {
                 tree.addChild(new TreeNode(token.getVal().toString()));
                 tokens.match();
                 tree.traceBack();
-            } else {
+            } else if (token != null){
                 exceptions.add(new ParseException("Grammar mistakes", tokens.getPreToken()));
             }
         } else if (token != null && ("else".equals(token.getType()) || "const".equals(token.getType()))) {
@@ -66,14 +75,8 @@ public class ExecuteStatement implements Expression {
         tree.traceBack();
     }
 
-    private void C(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("C"));
-        K(tree, tokens, exceptions);
-        tree.traceBack();
-    }
-
     private void K(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("K"));
+        tree.addChild(new TreeNode("语句表"));
         L(tree, tokens, exceptions);
         K1(tree, tokens, exceptions);
         tree.traceBack();
@@ -81,10 +84,13 @@ public class ExecuteStatement implements Expression {
 
     // TOOD 存在公共前缀未解决
     private void L(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("L"));
+        tree.addChild(new TreeNode("语句"));
         Token token = tokens.getCurToken();
         if (token != null && ("实数".equals(token.getType()) || "整数".equals(token.getType()) || "字符".equals(token.getType()) || "标识符".equals(token.getType()) || "(".equals(token.getType()) || "!".equals(token.getType()))) {
             expressionStatement.recognition(tree, tokens, exceptions);
+            exceptions.remove(exceptions.size()-1);
+            exceptions.remove(exceptions.size()-1);
+            exceptions.remove(exceptions.size()-1);
             token = tokens.getCurToken();
             if (token != null && ";".equals(token.getType())) {
                 tree.addChild(new TreeNode(token.getVal().toString()));
@@ -106,9 +112,9 @@ public class ExecuteStatement implements Expression {
     private void K1(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
         tree.addChild(new TreeNode("K1"));
         Token token = tokens.getCurToken();
-        if (token != null && ("const".equals(token.getType()) || "void".equals(token.getType()) || "int".equals(token.getType()) || "float".equals(token.getType()) || "char".equals(token.getType()))) {
+        if (token != null && ("const".equals(token.getType()) || "void".equals(token.getType()) || "int".equals(token.getType()) || "float".equals(token.getType()) || "char".equals(token.getType()) || "实数".equals(token.getType()) || "整数".equals(token.getType()) || "字符".equals(token.getType()) || "标识符".equals(token.getType()) || "if".equals(token.getType())||"for".equals(token.getType()) || "while".equals(token.getType()) || "do".equals(token.getType()) || "return".equals(token.getType()) || "{".equals(token.getType()))) {
             K(tree, tokens, exceptions);
-        } else if (token != null && "else".equals(token.getType())) {
+        } else if (token != null && ("else".equals(token.getType()) || "}".equals(token.getType()))) {
             pass();
         } else if (token != null) {
             exceptions.add(new ParseException("Grammar mistakes", tokens.getPreToken()));
@@ -118,7 +124,7 @@ public class ExecuteStatement implements Expression {
 
 
     private void B(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("B"));
+        tree.addChild(new TreeNode("控制语句"));
         Token token = tokens.getCurToken();
         if (token != null && "if".equals(token.getType())) {
             F(tree, tokens, exceptions);
@@ -137,7 +143,7 @@ public class ExecuteStatement implements Expression {
     }
 
     private void J(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("J"));
+        tree.addChild(new TreeNode("<return 语句>"));
         Token token = tokens.getCurToken();
         if (token != null && "return".equals(token.getType())) {
             tree.addChild(new TreeNode(token.getVal().toString()));
@@ -174,7 +180,7 @@ public class ExecuteStatement implements Expression {
     }
 
     private void I(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("I"));
+        tree.addChild(new TreeNode("<do while 语句>"));
         Token token = tokens.getCurToken();
         if (token != null && "do".equals(token.getType())) {
             tree.addChild(new TreeNode(token.getVal().toString()));
@@ -209,7 +215,7 @@ public class ExecuteStatement implements Expression {
     }
 
     private void O(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("O"));
+        tree.addChild(new TreeNode("循环复合语句"));
         Token token = tokens.getCurToken();
         if (token != null && "{".equals(token.getType())) {
             tree.addChild(new TreeNode(token.getVal().toString()));
@@ -231,14 +237,14 @@ public class ExecuteStatement implements Expression {
     }
 
     private void R(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("R"));
+        tree.addChild(new TreeNode("循环语句表"));
         N(tree, tokens, exceptions);
         R1(tree, tokens, exceptions);
         tree.traceBack();
     }
 
     private void N(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("N"));
+        tree.addChild(new TreeNode("循环语句"));
         Token token = tokens.getCurToken();
         if (token != null && ("if".equals(token.getType()) || "for".equals(token.getType()) || "while".equals(token.getType()) || "do".equals(token.getType()) || "return".equals(token.getType()) || "break".equals(token.getType()) || "continue".equals(token.getType()))) {
             Q(tree, tokens, exceptions);
@@ -253,7 +259,7 @@ public class ExecuteStatement implements Expression {
     }
 
     private void Q(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("Q"));
+        tree.addChild(new TreeNode("循环执行语句"));
         Token token = tokens.getCurToken();
         if (token != null && "if".equals(token.getType())) {
             S(tree, tokens, exceptions);
@@ -284,7 +290,7 @@ public class ExecuteStatement implements Expression {
     }
 
     private void S(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("S"));
+        tree.addChild(new TreeNode("循环if语句"));
         Token token = tokens.getCurToken();
         if (token != null && "if".equals(token.getType())) {
             tree.addChild(new TreeNode(token.getVal().toString()));
@@ -346,7 +352,7 @@ public class ExecuteStatement implements Expression {
 
 
     private void H(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("H"));
+        tree.addChild(new TreeNode("<while 语句>"));
         Token token = tokens.getCurToken();
         if (token != null && "while".equals(token.getType())) {
             tree.addChild(new TreeNode(token.getVal().toString()));
@@ -377,7 +383,7 @@ public class ExecuteStatement implements Expression {
     }
 
     private void G(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("G"));
+        tree.addChild(new TreeNode("<for 语句>"));
         Token token = tokens.getCurToken();
         if (token != null && "for".equals(token.getType())) {
             tree.addChild(new TreeNode(token.getVal().toString()));
@@ -434,7 +440,7 @@ public class ExecuteStatement implements Expression {
     }
 
     private void F(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
-        tree.addChild(new TreeNode("F"));
+        tree.addChild(new TreeNode("<if 语句>"));
         Token token = tokens.getCurToken();
         if (token != null && "if".equals(token.getType())) {
             tree.addChild(new TreeNode(token.getVal().toString()));
