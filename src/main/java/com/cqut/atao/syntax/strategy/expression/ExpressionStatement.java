@@ -257,6 +257,9 @@ public class ExpressionStatement implements Expression{
         tree.addChild(new TreeNode("ar_J1"));
         Token token = tokens.getCurToken();
         if (token != null && ",".equals(token.getType())){
+            tree.addChild(new TreeNode(token.getVal().toString()));
+            tokens.match();
+            tree.traceBack();
             ar_J(tree,tokens,exceptions);
         }else if (token != null && (")".equals(token.getType()))){
             pass();

@@ -35,7 +35,7 @@ public class TestStatement {
 
     @Test
     public void testDeclarativeStatement(){
-        String text = "const int b_global = 3;";
+        String text = "const int a = 10;";
 //        String text = "void hello(int,float);";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
@@ -49,7 +49,10 @@ public class TestStatement {
 
     @Test
     public void testExecuteStatement(){
-        String text = "while(10!=20) break;";
+//        String text = "while(10!=20) break;";
+//        String text = "for(i=10;i<20;i=(i+1)){ const int a = 1; }";
+//        String text = "while( k > 10 ){ if ( a > 10 ) { int b = 20; } }";
+        String text = "do { if ( a > 10 ) { int b = 20; } } while k > 30;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
@@ -63,7 +66,8 @@ public class TestStatement {
 
     @Test
     public void testExpressionStatement(){
-        String text = "a = c > d || e - 10 % f * (g + l)/2";
+//        String text = "a = c > d || e - 10 % f * (g + l)/2";
+        String text = "i=10";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);

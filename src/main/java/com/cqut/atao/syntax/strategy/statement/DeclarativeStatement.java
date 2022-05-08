@@ -197,7 +197,7 @@ public class DeclarativeStatement implements Expression {
     private void K(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
         tree.addChild(new TreeNode("单体变量声明"));
         Token token = tokens.getCurToken();
-        if (token!=null && "标识符".equals(token.getType())){
+        if (token!=null && ("标识符".equals(token.getType()) || "实数".equals(token.getType()) || "整数".equals(token.getType()))){
             tree.addChild(new TreeNode(token.getVal().toString()));
             tokens.match();
             tree.traceBack();
