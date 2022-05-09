@@ -12,6 +12,9 @@ import java.io.IOException;
  * @createTime 2022年04月19日 11:32:00
  */
 public class ParseException extends RuntimeException{
+    public ParseException() {
+
+    }
 
     // 构造方法
     public ParseException(IOException e) {

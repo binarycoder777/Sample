@@ -1,10 +1,11 @@
 package com.cqut.atao;
 
-import com.cqut.atao.chain.Chain;
-import com.cqut.atao.chain.ChainBuilder;
-import com.cqut.atao.configuration.ChairmanshipCoder;
+
 import com.cqut.atao.lexical.Lexer;
 import com.cqut.atao.lexical.Line;
+import com.cqut.atao.lexical.chain.Chain;
+import com.cqut.atao.lexical.chain.ChainBuilder;
+import com.cqut.atao.lexical.configuration.ChairmanshipCoder;
 import com.cqut.atao.token.Token;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -159,8 +160,11 @@ public class TestLexer {
     public void testlexer(){
 //        logger.warn(codeMap.toString());
 //        logger.warn(ChairmanshipCoder.readCoder().toString());
-        Lexer lexer = new Lexer();
-        lexer.lexicalAnalysis();
+        int lineNumber = 1;
+        String val  = "+ (";
+        Line line = new Line(val,lineNumber);
+        line.analysisLine(line);
+        logger.warn(line.getTokens().toString());
     }
 
 }
