@@ -76,7 +76,7 @@ public class TestStatement {
     @Test
     public void testExecuteStatement() {
 //        String text = "while(10!=20) break;";
-        String text = "for(i=10;i<20;i=(i+ + 1)){ const int a = 1; }";
+        String text = "for(i=10;i<20;i=(i+ 1)){ const int a = 1; }";
 //        String text = "while( k > 10 ){ if ( a > 10 ) { int b = 20; } else { int a = g = (10+c)/2+(b-d)%2+e*3; } }";
 //        String text = "do { if ( a > 10 ) { int b = 20; } } while k > 30;";
         lexer.lexicalAnalysis(text);
@@ -94,8 +94,8 @@ public class TestStatement {
 
     @Test
     public void testFunctionStatement() {
-//        String text = "void if_fuc(int i,int j) { int a = 10; if(a>b) c=1; else c=2;}";
-        String text = "int for_fuc() { int i=10; for(i=1;i<10;i=1) { int a = b = (10+c)/2+(b-d%2+e*3);} }";
+        String text = "void if_fuc(int i,int j) { int a = 10; if(a>b) c=1; else c=2;}";
+//        String text = "int for_fuc() { int i=10; for(i=1;i<10;i=1) { int a = b = (10+c)/2+(b-d%2+e*3);} }";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
@@ -112,7 +112,7 @@ public class TestStatement {
     @Test
     public void testProgramStatement() {
         String text = "int main(){ int a,b,c; int d=2;}" +
-                "void if_fuc(int i,int j) { int a = 10; if(a><b) c=1; else c=2;}";
+                "void if_fuc(int i,int j) { int a = 10; if(a<b) c=1; else c=2;}";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
