@@ -217,6 +217,9 @@ public class DeclarativeStatement implements Expression {
             tokens.match();
             tree.traceBack();
             expressionStatement.recognition(tree,tokens,exceptions);
+            exceptions.remove(exceptions.size()-1);
+            exceptions.remove(exceptions.size()-1);
+            exceptions.remove(exceptions.size()-1);
         }else if (token != null && (",".equals(token.getType()) || ";".equals(token.getType()))){
             pass();
         } else if (token == null){

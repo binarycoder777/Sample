@@ -337,6 +337,9 @@ public class ExpressionStatement implements Expression{
         tree.addChild(new TreeNode("bo_C1"));
         Token token = tokens.getCurToken();
         if (token != null && (">".equals(token.getType())||">=".equals(token.getType()) || "<".equals(token.getType()) || "<=".equals(token.getType()) || "==".equals(token.getType()) || "!=".equals(token.getType()) || "&&".equals(token.getType()) || "||".equals(token.getType()))){
+            tree.addChild(new TreeNode(token.getVal().toString()));
+            tokens.match();
+            tree.traceBack();
             ar_S(tree,tokens,exceptions);
         }else if (token != null && (",".equals(token.getType()) || ")".equals(token.getType())||"&&".equals(token.getType()) || "||".equals(token.getType()))){
             pass();
