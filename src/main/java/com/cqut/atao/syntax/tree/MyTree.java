@@ -43,25 +43,6 @@ public class MyTree implements Serializable {
         this.curNode = this.curNode.getParent();
     }
 
-    public void printMyTree(){
-        int len = 1;
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.add(root);
-        while (!queue.isEmpty()){
-            int tmp = len;
-            len = 0;
-            while (tmp-- > 0){
-                TreeNode root = queue.poll();
-                System.out.print(root.getVal()+"\t");
-                for (int i = 0; i < root.getChild().size(); i++) {
-                    queue.add(root.getChild().get(i));
-                }
-                len += root.getChild().size();
-            }
-            System.out.println();
-        }
-    }
-
 
     public  void print() {
         printHelper(root, "\t");
@@ -80,5 +61,6 @@ public class MyTree implements Serializable {
             printHelper(node, start + "\t");
         }
     }
+
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
  * @Description TODO
  * @createTime 2022年05月08日 08:36:00
  */
-public class ExpressionStatement implements Expression {
+public class ExpressionStatement implements Expression{
 
     @Override
     public void recognition(MyTree tree,TokenList<Token> tokens, List<Exception> exceptions) {
@@ -51,7 +51,11 @@ public class ExpressionStatement implements Expression {
                 ar_S1(tree,tokens,exceptions);
                 E1(tree,tokens,exceptions);
             }else if (token != null){
-                exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+                exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+                tokens.match();
+                ar_A1(tree,tokens,exceptions);
+                ar_S1(tree,tokens,exceptions);
+                E1(tree,tokens,exceptions);
             }
         }else if (token != null && "标识符".equals(token.getType())){
             tree.addChild(new TreeNode(token.getVal().toString()));
@@ -91,7 +95,9 @@ public class ExpressionStatement implements Expression {
         }else if (token != null && (",".equals(token.getType()) || ")".equals(token.getType())||"&&".equals(token.getType())||"||".equals(token.getType())||"+".equals(token.getType())||"-".equals(token.getType())||"*".equals(token.getType())||"/".equals(token.getType())||"%".equals(token.getType())||">".equals(token.getType())||"<".equals(token.getType())||">=".equals(token.getType())||"<=".equals(token.getType())||"==".equals(token.getType())||"!=".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            E3(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -112,7 +118,9 @@ public class ExpressionStatement implements Expression {
         }else if (token != null && (",".equals(token.getType()) || ")".equals(token.getType())||"&&".equals(token.getType())||"||".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            E1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -126,7 +134,9 @@ public class ExpressionStatement implements Expression {
         }else if (token != null && (",".equals(token.getType()) || ")".equals(token.getType())||"&&".equals(token.getType())||"||".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            E2(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -149,7 +159,9 @@ public class ExpressionStatement implements Expression {
         }else if (token != null && (",".equals(token.getType()) || ")".equals(token.getType()) || "&&".equals(token.getType()) || "||".equals(token.getType()) || ">".equals(token.getType())||"<".equals(token.getType())||">=".equals(token.getType())||"<=".equals(token.getType())||"==".equals(token.getType())||"!=".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            ar_S1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -172,7 +184,9 @@ public class ExpressionStatement implements Expression {
         }else if (token != null && ("+".equals(token.getType()) || "-".equals(token.getType())||",".equals(token.getType()) || ")".equals(token.getType()) || "&&".equals(token.getType()) || "||".equals(token.getType()) || ">".equals(token.getType())||"<".equals(token.getType())||">=".equals(token.getType())||"<=".equals(token.getType())||"==".equals(token.getType())||"!=".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            ar_A1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -200,10 +214,13 @@ public class ExpressionStatement implements Expression {
                 tokens.match();
                 tree.traceBack();
             }else if (token != null){
-                exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+                exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+                tokens.match();
             }
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            ar_B(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -224,12 +241,15 @@ public class ExpressionStatement implements Expression {
                 tokens.match();
                 tree.traceBack();
             }else if (token != null){
-                exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+                exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+                tokens.match();
             }
         }else if (token != null && ("*".equals(token.getType())||"/".equals(token.getType())||"%".equals(token.getType()) || "+".equals(token.getType()) || "-".equals(token.getType()) || ")".equals(token.getType()) || ",".equals(token.getType())||"||".equals(token.getType())||"&&".equals(token.getType()) || ">".equals(token.getType())||"<".equals(token.getType())||">=".equals(token.getType())||"<=".equals(token.getType())||"==".equals(token.getType())||"!=".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            ar_B1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -242,7 +262,9 @@ public class ExpressionStatement implements Expression {
         }else if (token != null && (")".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            ar_I(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -258,11 +280,16 @@ public class ExpressionStatement implements Expression {
         tree.addChild(new TreeNode("ar_J1"));
         Token token = tokens.getCurToken();
         if (token != null && ",".equals(token.getType())){
+            tree.addChild(new TreeNode(token.getVal().toString()));
+            tokens.match();
+            tree.traceBack();
             ar_J(tree,tokens,exceptions);
         }else if (token != null && (")".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            ar_J1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -285,7 +312,9 @@ public class ExpressionStatement implements Expression {
         }else if (token!=null && (",".equals(token.getType())||")".equals(token.getType())||"&&".equals(token.getType())||"||".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            bo_A1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -309,7 +338,9 @@ public class ExpressionStatement implements Expression {
         }else if (token!=null && (",".equals(token.getType())||")".equals(token.getType())||"&&".equals(token.getType())||"||".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            bo_B1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -326,7 +357,8 @@ public class ExpressionStatement implements Expression {
             ar_S(tree,tokens,exceptions);
             bo_C1(tree,tokens,exceptions);
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
         }
         tree.traceBack();
     }
@@ -335,11 +367,16 @@ public class ExpressionStatement implements Expression {
         tree.addChild(new TreeNode("bo_C1"));
         Token token = tokens.getCurToken();
         if (token != null && (">".equals(token.getType())||">=".equals(token.getType()) || "<".equals(token.getType()) || "<=".equals(token.getType()) || "==".equals(token.getType()) || "!=".equals(token.getType()) || "&&".equals(token.getType()) || "||".equals(token.getType()))){
+            tree.addChild(new TreeNode(token.getVal().toString()));
+            tokens.match();
+            tree.traceBack();
             ar_S(tree,tokens,exceptions);
         }else if (token != null && (",".equals(token.getType()) || ")".equals(token.getType())||"&&".equals(token.getType()) || "||".equals(token.getType()))){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            bo_C1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }

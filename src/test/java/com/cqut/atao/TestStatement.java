@@ -2,11 +2,7 @@ package com.cqut.atao;
 
 import com.cqut.atao.lexical.Lexer;
 import com.cqut.atao.syntax.TokenList;
-import com.cqut.atao.syntax.strategy.expression.ExpressionStatement;
-import com.cqut.atao.syntax.strategy.statement.DeclarativeStatement;
-import com.cqut.atao.syntax.strategy.statement.ExecuteStatement;
-import com.cqut.atao.syntax.strategy.statement.FunctionStatement;
-import com.cqut.atao.syntax.strategy.statement.ProgramStatement;
+import com.cqut.atao.syntax.strategy.statement.*;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.token.Token;
 import org.junit.Test;
@@ -41,85 +37,92 @@ public class TestStatement {
 
 
     @Test
-    public void testExpressionStatement(){
-//        String text = "10 % f * (g + l)/2";
-//        String text = "a = 10";
+    public void testExpressionStatement() {
+//        String text = "10 % f * (g + l - c)/2";
+//        String text = "a = 10+b";
 //        String text = "a > 10";
-//        String text = "e > 10 || e - 10 % f * (g + l)/2 > 2";
-        String text = "a = c > d || e - 10 % f * (g + l)/2";
+//        String text = "e > 10 || b > 10";
+        String text = "a = c > d || e - 10 % f * (g + l) / 2 > 3";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
-        expressionStatement.recognition(tree,tokenList,exceptions);
+        expressionStatement.recognition(tree, tokenList, exceptions);
         tree.print();
-        logger.error(exceptions.toString());
+        for (Exception exception : exceptions) {
+            logger.error(exception.toString() + "\n");
+        }
     }
 
     @Test
-    public void testDeclarativeStatement(){
-//        String text = "int a = 10;";
+    public void testDeclarativeStatement() {
+//        String text = "int a = b = 10 + c;";
 //        String text = "void hello(int,float);";
-        String text = "int a = b = (10+c)/2+(b-d%2+e*3)";
+        String text = "int a = b = (10 + c) / 2 + ( b - d % 2 + e * 3 );";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
-        declarativeStatement.recognition(tree,tokenList,exceptions);
+        declarativeStatement.recognition(tree, tokenList, exceptions);
         tree.print();
-        logger.error(exceptions.toString());
+        for (Exception exception : exceptions) {
+            logger.error(exception.toString() + "\n");
+        }
     }
 
 
     @Test
-    public void testExecuteStatement(){
+    public void testExecuteStatement() {
 //        String text = "while(10!=20) break;";
-//        String text = "for(i=10;i<20;i=(i+1)){ const int a = 1; }";
-//        String text = "while( k > 10 ){ if ( a > 10 ) { int b = 20; } else { int a = g = (10+c)/2+(b-d%2+e*3);} }";
-        String text = "do { if ( a > 10 ) { int b = 20; } } while k > 30;";
+        String text = "for(i=10;i<20;i=(i+ + 1)){ const int a = 1; }";
+//        String text = "while( k > 10 ){ if ( a > 10 ) { int b = 20; } else { int a = g = (10+c)/2+(b-d)%2+e*3; } }";
+//        String text = "do { if ( a > 10 ) { int b = 20; } } while k > 30;";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
-        executeStatement.recognition(tree,tokenList,exceptions);
+        executeStatement.recognition(tree, tokenList, exceptions);
         tree.print();
-        logger.error(exceptions.toString());
+        for (Exception exception : exceptions) {
+            logger.error(exception.toString() + "\n");
+        }
     }
 
 
     @Test
-    public void testFunctionStatement(){
-//        String text = "a = c > d || e - 10 % f * (g + l)/2";
-        String text = "void if_fuc(int i,int j) { int a = 10; if(a>b) c=1; else c=2;}";
-//        String text = "int for_fuc() { int i=10; for(i=1;i<10;i=1) { int a = b = (10+c)/2+(b-d%2+e*3);} }";
-        lexer.lexicalAnalysis(text);
-        List<Token> tokens = lexer.getTokens();
-        TokenList<Token> tokenList = new TokenList<>(tokens);
-        MyTree tree = new MyTree();
-        List<Exception> exceptions = new ArrayList<>();
-        functionStatement.recognition(tree,tokenList,exceptions);
-        tree.print();
-        logger.error(exceptions.toString());
-    }
-
-
-    @Test
-    public void testProgramStatement(){
-//        String text = "a = c > d || e - 10 % f * (g + l)/2";
+    public void testFunctionStatement() {
 //        String text = "void if_fuc(int i,int j) { int a = 10; if(a>b) c=1; else c=2;}";
-        String text = "int main() { int a,b,c; int d=2;}" +
-                "void if_fuc(int i,int j) { int a = 10; if(a>b) c=1; else c=2;}";
+        String text = "int for_fuc() { int i=10; for(i=1;i<10;i=1) { int a = b = (10+c)/2+(b-d%2+e*3);} }";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
-        programStatement.recognition(tree,tokenList,exceptions);
+        functionStatement.recognition(tree, tokenList, exceptions);
         tree.print();
-        logger.error(exceptions.toString());
+        for (Exception exception : exceptions) {
+            logger.error(exception.toString() + "\n");
+        }
+    }
+
+
+    @Test
+    public void testProgramStatement() {
+        String text = "int main(){ int a,b,c; int d=2;}" +
+                "void if_fuc(int i,int j) { int a = 10; if(a><b) c=1; else c=2;}";
+        lexer.lexicalAnalysis(text);
+        List<Token> tokens = lexer.getTokens();
+        TokenList<Token> tokenList = new TokenList<>(tokens);
+        MyTree tree = new MyTree();
+        List<Exception> exceptions = new ArrayList<>();
+        programStatement.recognition(tree, tokenList, exceptions);
+        tree.print();
+        for (Exception exception : exceptions) {
+            logger.error(exception.toString() + "\n");
+        }
     }
 
 }
