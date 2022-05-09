@@ -39,7 +39,9 @@ public class DeclarativeStatement implements Expression {
             tree.traceBack();
             S1(tree,tokens,exceptions);
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            S(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -53,7 +55,9 @@ public class DeclarativeStatement implements Expression {
             tree.traceBack();
             S2(tree,tokens,exceptions);
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            S1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -72,7 +76,8 @@ public class DeclarativeStatement implements Expression {
                 tokens.match();
                 tree.traceBack();
             }else {
-                exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+                exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+                tokens.match();
             }
         }else if (token != null && "=".equals(token.getType())){
             tree.addChild(new TreeNode(token.getVal().toString()));
@@ -90,7 +95,9 @@ public class DeclarativeStatement implements Expression {
             tokens.match();
             tree.traceBack();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            S2(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -110,10 +117,14 @@ public class DeclarativeStatement implements Expression {
                 tree.traceBack();
                 F(tree,tokens,exceptions);
             }else {
-                exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+                exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+                tokens.match();
+                F(tree,tokens,exceptions);
             }
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            C(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -137,13 +148,29 @@ public class DeclarativeStatement implements Expression {
                     tree.traceBack();
                     F1(tree,tokens,exceptions);
                 }else {
-                    exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+                    exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+                    tokens.match();
+                    F1(tree,tokens,exceptions);
                 }
             }else {
-                exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+                exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+                tokens.match();
+                token = tokens.getCurToken();
+                if (token != null && ("字符".equals(token.getType()) || "实数".equals(token.getType()) || "字符串".equals(token.getType()) || "整数".equals(token.getType()))){
+                    tree.addChild(new TreeNode(token.getVal().toString()));
+                    tokens.match();
+                    tree.traceBack();
+                    F1(tree,tokens,exceptions);
+                }else {
+                    exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+                    tokens.match();
+                    F1(tree,tokens,exceptions);
+                }
             }
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            F(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -162,7 +189,9 @@ public class DeclarativeStatement implements Expression {
             F(tree,tokens,exceptions);
             tree.traceBack();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            F1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -188,7 +217,9 @@ public class DeclarativeStatement implements Expression {
             tree.traceBack();
             J(tree,tokens,exceptions);
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            J1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -202,7 +233,9 @@ public class DeclarativeStatement implements Expression {
             tree.traceBack();
             K1(tree,tokens,exceptions);
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            K(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -216,13 +249,14 @@ public class DeclarativeStatement implements Expression {
             tokens.match();
             tree.traceBack();
             expressionStatement.recognition(tree,tokens,exceptions);
-            exceptions.remove(exceptions.size()-1);
-            exceptions.remove(exceptions.size()-1);
+            // 消除表达式对;的异常（误判）
             exceptions.remove(exceptions.size()-1);
         }else if (token != null && (",".equals(token.getType()) || ";".equals(token.getType()))){
             pass();
         } else if (token == null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            K1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -239,7 +273,9 @@ public class DeclarativeStatement implements Expression {
         }else if (token != null && ")".equals(token.getType())){
             pass();
         }else if (token!=null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            O(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -253,7 +289,9 @@ public class DeclarativeStatement implements Expression {
             tree.traceBack();
             P1(tree,tokens,exceptions);
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            P(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
@@ -269,7 +307,9 @@ public class DeclarativeStatement implements Expression {
         }else if (token != null && ")".equals(token.getType())){
             pass();
         }else if (token != null){
-            exceptions.add(new ParseException("Grammar mistakes",tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes",tokens.getCurToken()));
+            tokens.match();
+            P1(tree,tokens,exceptions);
         }
         tree.traceBack();
     }
