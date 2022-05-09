@@ -3,9 +3,7 @@ package com.cqut.atao.syntax.strategy.statement;
 import com.alibaba.fastjson.JSONObject;
 import com.cqut.atao.exception.ParseException;
 import com.cqut.atao.syntax.TokenList;
-import com.cqut.atao.syntax.strategy.expression.AssignmentExpression;
 import com.cqut.atao.syntax.strategy.expression.Expression;
-import com.cqut.atao.syntax.strategy.expression.ExpressionClient;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.syntax.tree.TreeNode;
 import com.cqut.atao.token.Token;
@@ -341,11 +339,11 @@ public class ExecuteStatement implements Expression {
         tree.addChild(new TreeNode("R1"));
         Token token = tokens.getCurToken();
         if (token!=null && ("const".equals(token.getType()) || "if".equals(token.getType()) || "for".equals(token.getType()) || "while".equals(token.getType()) || "do".equals(token.getType()) || "return".equals(token.getType()) || "break".equals(token.getType()) || "continue".equals(token.getType()) || "{".equals(token.getType()))){
-             R(tree,tokens,exceptions);
+            R(tree,tokens,exceptions);
         } else if (token != null && "}".equals(token.getType())){
             pass();
         }else if (token != null){
-           exceptions.add(new ParseException("Grammar mistakes", tokens.getPreToken()));
+            exceptions.add(new ParseException("Grammar mistakes", tokens.getPreToken()));
         }
         tree.traceBack();
     }
