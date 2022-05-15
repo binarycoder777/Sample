@@ -94,8 +94,8 @@ public class TestStatement {
 
     @Test
     public void testFunctionStatement() {
-        String text = "void if_fuc(int i,int j) { int a = 10; if(a>b) c=1; else c=2;}";
-//        String text = "int for_fuc() { int i=10; for(i=1;i<10;i=1) { int a = b = (10+c)/2+(b-d%2+e*3);} }";
+//        String text = "void if_fuc(int i,int j) { int a = 10; if(a>b) c=1; else c=2;}";
+        String text = "int for_fuc() { int i=10; for(i=1;i<10;i=1) { int a = b = (10+c)/2+(b-d%2+e*3);} }";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
