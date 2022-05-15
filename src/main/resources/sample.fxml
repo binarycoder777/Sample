@@ -10,14 +10,12 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="rootLayout" alignment="center" hgap="10" prefHeight="1100.0" prefWidth="1200.0" vgap="10"
-          xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="com.cqut.atao.controller.Controller">
+<GridPane fx:id="rootLayout" alignment="center" hgap="10" prefHeight="1100.0" prefWidth="1200.0" vgap="10" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cqut.atao.controller.Controller">
     <columnConstraints>
-        <ColumnConstraints/>
+        <ColumnConstraints />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints/>
+        <RowConstraints />
     </rowConstraints>
     <children>
         <BorderPane prefHeight="1000.0" prefWidth="1200.0">
@@ -26,41 +24,39 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#open" text="Open"/>
+                                <MenuItem mnemonicParsing="false" onAction="#open" text="Open" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Delete"/>
+                                <MenuItem mnemonicParsing="false" text="Delete" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Run">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#lexer" text="Lexer"/>
-                                <MenuItem mnemonicParsing="false" onAction="#syntax" text="Syntax"/>
+                                <MenuItem mnemonicParsing="false" onAction="#lexer" text="Lexer" />
+                                <MenuItem mnemonicParsing="false" text="Syntax" onAction="#syntax"/>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="About"/>
+                                <MenuItem mnemonicParsing="false" text="About" />
                             </items>
                         </Menu>
                     </menus>
                 </MenuBar>
             </top>
             <center>
-                <Separator orientation="VERTICAL" prefHeight="500.0" prefWidth="600.0" BorderPane.alignment="CENTER"/>
+                <Separator orientation="VERTICAL" prefHeight="500.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
             </center>
             <left>
-                <TextArea fx:id="coderArea" prefHeight="500.0" prefWidth="700.0" text="代码区"
-                          BorderPane.alignment="CENTER"/>
+                <TextArea fx:id="coderArea" prefHeight="500.0" prefWidth="700.0" text="代码区" BorderPane.alignment="CENTER" />
             </left>
             <right>
-                <TextArea fx:id="tokenArea" prefHeight="500.0" prefWidth="500.0" text="Token区"
-                          BorderPane.alignment="CENTER"/>
+                <TextArea fx:id="tokenArea" prefHeight="500.0" prefWidth="500.0" text="Token区" BorderPane.alignment="CENTER" />
             </right>
             <bottom>
-                <TextArea fx:id="treeArea" prefHeight="400.0" text="结果区" BorderPane.alignment="CENTER"/>
+                <TextArea fx:id="treeArea" prefHeight="400.0" text="结果区" BorderPane.alignment="CENTER" />
             </bottom>
         </BorderPane>
     </children>
