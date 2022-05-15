@@ -122,50 +122,50 @@ public class TestSyntax {
 
     @Test
     public void testProgramStatement() {
-        String text = "//双递归函数调用测试2：求菲波拉契数列\n" +
-                "int seq(int);\n" +
-                "main()\n" +
-                "{\n" +
-                "   int n;\n" +
-                "   n=read();\n" +
-                "   write(seq(n));\n" +
-                "}\n" +
-                "\n" +
-                "int seq(int m) \n" +
-                "{\n" +
-                "      int s,a,b;\n" +
-                "      if(m<2)\n" +
-                "          s=1;\n" +
-                "      else{\n" +
-                "//           a=seq(m-1);//这种写法可以正确运行\n" +
-                "//           b=seq(m-2);\n" +
-                "//           s=a+b;\n" +
-                "     s=seq(m-1)+seq(m-2);//这种写法运行结果不正确，中间代码翻译没有问题，需再测试目标代码翻译\n" +
-                "      }\n" +
-                "      return s;\n" +
-                "\n" +
-                "}";
-//        String text = "// 双递归函数调用测试2：计算组合数\n" +
-//                "int comp(int,int);\n" +
+//        String text = "//双递归函数调用测试2：求菲波拉契数列\n" +
+//                "int seq(int);\n" +
 //                "main()\n" +
 //                "{\n" +
-//                "   int m,k,result;\n" +
-//                "   m = read();\n" +
-//                "   k = read();\n" +
-//                "   result = comp(m,k);\n" +
-//                "   write(result);\n" +
+//                "   int n;\n" +
+//                "   n=read();\n" +
+//                "   write(seq(n));\n" +
 //                "}\n" +
 //                "\n" +
-//                "int comp(int n,int i) {\n" +
-//                "int a,b; \n" +
-//                "if(n < i || i > 10)\n" +
-//                "\t{\n" +
-//                "\t\treturn 1;\n" +
-//                "\t}\n" +
-//                "\t a = comp(n-1,i);\n" +
-//                "\t b = comp(n-1,i-1);\n" +
-//                "\treturn a + b; \n" +
+//                "int seq(int m) \n" +
+//                "{\n" +
+//                "      int s,a,b;\n" +
+//                "      if(m<2)\n" +
+//                "          s=1;\n" +
+//                "      else{\n" +
+//                "//           a=seq(m-1);//这种写法可以正确运行\n" +
+//                "//           b=seq(m-2);\n" +
+//                "//           s=a+b;\n" +
+//                "     s=seq(m-1)+seq(m-2);//这种写法运行结果不正确，中间代码翻译没有问题，需再测试目标代码翻译\n" +
+//                "      }\n" +
+//                "      return s;\n" +
+//                "\n" +
 //                "}";
+        String text = "// 双递归函数调用测试2：计算组合数\n" +
+                "int comp(int,int);\n" +
+                "main()\n" +
+                "{\n" +
+                "   int m,k,result;\n" +
+                "   m = read();\n" +
+                "   k = read();\n" +
+                "   result = comp(m,k);\n" +
+                "   write(result);\n" +
+                "}\n" +
+                "\n" +
+                "int comp(int n,int i) {\n" +
+                "int a,b; \n" +
+                "if(n < i || i > 10)\n" +
+                "\t{\n" +
+                "\t\treturn 1;\n" +
+                "\t}\n" +
+                "\t a = comp(n-1,i);\n" +
+                "\t b = comp(n-1,i-1);\n" +
+                "\treturn a + b; \n" +
+                "}";
 //       String text = "//for嵌套if,求1到给定数N以内所有奇数的和\n" +
 //                "main()\n" +
 //                "{\n" +

@@ -1,6 +1,7 @@
 package com.cqut.atao.controller;
 
 import com.cqut.atao.lexical.Lexer;
+import com.cqut.atao.syntax.Parser;
 import com.cqut.atao.syntax.TokenList;
 import com.cqut.atao.syntax.strategy.statement.Syntax;
 import com.cqut.atao.syntax.tree.MyTree;
@@ -37,7 +38,7 @@ public class Controller {
 
     private Lexer lexer = new Lexer();
 
-    private Syntax syntax = new Syntax();
+    private Parser parser = new Parser();
 
     private List<Token> tokens;
 
@@ -76,7 +77,7 @@ public class Controller {
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
         // 生成语法树
-        syntax.Program(tree, tokenList, exceptions);
+        parser.syataxAnalysis(tree, tokenList, exceptions);
         // 回显
        if (exceptions.size() != 0){
            treeArea.setText(TokenUtil.displayException(exceptions));
