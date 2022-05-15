@@ -6,7 +6,7 @@ import lombok.Data;
  * @author atao
  * @version 1.0.0
  * @ClassName MyErrorCode.java
- * @Description TODO
+ * @Description 错误码
  * @createTime 2022年05月01日 13:52:00
  */
 public enum MyErrorCode {

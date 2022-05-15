@@ -568,7 +568,7 @@ public class Syntax {
         Token token = tokens.getCurToken();
         if (token != null && ("=".equals(token.getType()))){
             math(tree,tokens);
-           expression(tree,tokens,exceptions);
+            expression(tree,tokens,exceptions);
         }else if (token!=null){
             // error
         }
@@ -595,7 +595,7 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少(",tokens.getCurToken()));
             }
-            de_E1(tree,tokens,exceptions);
+            de_H(tree,tokens,exceptions);
             token = tokens.getCurToken();
             if (token != null &&")".equals(token.getType())){
                 math(tree,tokens);
@@ -612,7 +612,7 @@ public class Syntax {
     private void de_H(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
         tree.addChild(new TreeNode("de_H"));
         Token token = tokens.getCurToken();
-        if (token != null && (judgeE(token))){
+        if (token != null && (judgeE(token) || "标识符".equals(token.getType()))){
            de_I(tree,tokens,exceptions);
         }else if (token!=null){
             // error
@@ -624,6 +624,9 @@ public class Syntax {
         tree.addChild(new TreeNode("de_I"));
         Token token = tokens.getCurToken();
         if (token != null && (judgeE(token))){
+            math(tree,tokens);
+            de_I1(tree,tokens,exceptions);
+        }else if (token!=null && "标识符".equals(token.getType())){
             math(tree,tokens);
             de_I1(tree,tokens,exceptions);
         }else if (token!=null){
@@ -960,7 +963,10 @@ public class Syntax {
         }else if (token!=null && (judgeE(token))){
             math(tree,tokens);
             DE1(tree,tokens,exceptions);
-        }else if (token!=null && ("if".equals(token.getType()) || "for".equals(token.getType()) || "while".equals(token.getType()) || "do".equals(token.getType()) || "return".equals(token.getType()) || "break".equals(token.getType()) || "continue".equals(token.getType()))){
+        }else if (token!=null && "标识符".equals(token.getType())){
+//            math(tree,tokens);
+            DE1(tree,tokens,exceptions);
+        } else if (token!=null && ("if".equals(token.getType()) || "for".equals(token.getType()) || "while".equals(token.getType()) || "do".equals(token.getType()) || "return".equals(token.getType()) || "break".equals(token.getType()) || "continue".equals(token.getType()))){
             ex_M(tree,tokens,exceptions);
         }else if (token!=null && "{".equals(token.getType())){
             ex_L(tree,tokens,exceptions);
@@ -1000,7 +1006,7 @@ public class Syntax {
     private void ex_N1(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions) {
         tree.addChild(new TreeNode("ex_N1"));
         Token token = tokens.getCurToken();
-        if (token != null && ("const".equals(token.getType()) || judgeE(token) || "if".equals(token.getType()) || "for".equals(token.getType()) || "while".equals(token.getType()) || "do".equals(token.getType()) || "return".equals(token.getType()) || "break".equals(token.getType()) || "continue".equals(token.getType()) || "{".equals(token.getType()))){
+        if (token != null && ("const".equals(token.getType()) || judgeE(token) || "if".equals(token.getType()) || "for".equals(token.getType()) || "while".equals(token.getType()) || "do".equals(token.getType()) || "return".equals(token.getType()) || "break".equals(token.getType()) || "continue".equals(token.getType()) || "{".equals(token.getType()) || "标识符".equals(token.getType()))){
           ex_N(tree,tokens,exceptions);
         }else if (token!=null){
             // error

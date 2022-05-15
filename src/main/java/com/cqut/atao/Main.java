@@ -1,20 +1,23 @@
 package com.cqut.atao;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import java.util.Map;
+public class Main extends Application {
 
-/**
- * @author atao
- * @version 1.0.0
- * @ClassName Main.java
- * @Description TODO
- * @createTime 2022年03月16日 10:37:00
- */
-@SpringBootApplication
-public class Main {
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("sample.fxml"));
+        primaryStage.setTitle("Hello World");
+        primaryStage.setScene(new Scene(root, 840, 840));
+        primaryStage.show();
+    }
+
+
     public static void main(String[] args) {
-        SpringApplication.run(Main.class,args);
+        launch(args);
     }
 }

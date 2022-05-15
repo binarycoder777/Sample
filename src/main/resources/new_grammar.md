@@ -48,6 +48,7 @@
 <循环if语句> -> if(<表达式>)<循环语句> | if(<表达式>)<循环语句>else<循环语句>
 <break语句> -> break;
 <continue语句> -> continue;
+
 <函数定义> -> <函数类型> <标识符> (<函数定义参数列表>) <复合语句>
 <函数定义参数列表> -> <函数定义形参> | 空
 <函数定义形参> -> <变量类型> <标识符> | <变量类型> <标识符>,<函数定义形参>
@@ -249,7 +250,7 @@ de_G' -> = Expression | 空
 de_B -> e c (de_H)
 de_H -> de_I | 空
 // de_I -> e | e,de_I
-de_I -> e de_I'
+de_I -> e de_I' | c de_I'
 de_I' -> ,de_I | 空
 
 // EX -> ex_A | ex_B | ex_C
@@ -273,7 +274,7 @@ ex_G -> do ex_L while Expression;
 ex_H -> return ex_H'
 ex_H'-> ; | Expression;
 // ex_K -> DE | ex_M | ex_L
-ex_K -> const e de_E | e DE' | ex_M | ex_L | 空
+ex_K -> const e de_E | e DE' | ex_M | ex_L | DE' | 空
 ex_L ->{ex_N}
 // ex_N -> ex_K | ex_K ex_N
 ex_N -> ex_K ex_N'
