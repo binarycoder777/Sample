@@ -1,11 +1,13 @@
 package com.cqut.atao;
 
 import com.cqut.atao.lexical.Lexer;
+import com.cqut.atao.middle.MiddleCode;
 import com.cqut.atao.syntax.Parser;
 import com.cqut.atao.syntax.TokenList;
 import com.cqut.atao.syntax.strategy.statement.Syntax;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.token.Token;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,17 +28,26 @@ public class TestParser {
 
     private Lexer lexer = new Lexer();
 
+
     private Parser parser = new Parser();
 
-    @Test
+    MyTree tree = new MyTree();
+
+    MiddleCode middleCode = new MiddleCode();
+
+
+    @Before
     public void testProgramStatement() {
+        parser.getSyntax().setMiddleCode(middleCode);
         String text = "// 双递归函数调用测试2：计算组合数\n" +
-                "const int a = 10;\n"+
-                "int comp(int,int);\n" +
-                "int comp(int,int);\n" +
+                "const int a = 10, b = 20;\n"+
+                "const float c = 10, d = 20;\n"+
+                "int min(int,int);\n" +
+                "int max(float,float);\n" +
                 "main()\n" +
                 "{\n" +
                 "   int m,k,result;\n" +
+                "   const int hh = 20;\n" +
                 "   m = read();\n" +
                 "   k = read();\n" +
                 "   result = comp(m,k);\n" +
@@ -56,13 +67,18 @@ public class TestParser {
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
-        MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
         parser.syataxAnalysis(tree, tokenList, exceptions);
         tree.print();
         for (Exception exception : exceptions) {
             logger.error(exception.toString() + "\n");
         }
+    }
+
+    @Test
+    public void testFillTable() {
+        logger.error(middleCode.getTable().getConstTable().toString()+"\n\n");
+        logger.error(middleCode.getTable().getFunctionTable().toString());
     }
 
 }

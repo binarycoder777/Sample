@@ -40,7 +40,7 @@ public class TestSyntax {
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
-        syntax.expression(tree, tokenList, exceptions);
+        syntax.expression();
         tree.print();
         for (Exception exception : exceptions) {
             logger.error(exception.toString() + "\n");
@@ -57,7 +57,7 @@ public class TestSyntax {
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
-        syntax.DE(tree, tokenList, exceptions);
+        syntax.DE();
         tree.print();
         for (Exception exception : exceptions) {
             logger.error(exception.toString() + "\n");
@@ -82,7 +82,7 @@ public class TestSyntax {
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
-        syntax.Statement(tree, tokenList, exceptions);
+        syntax.Statement();
         tree.print();
         for (Exception exception : exceptions) {
             logger.error(exception.toString() + "\n");
@@ -112,7 +112,7 @@ public class TestSyntax {
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
-        syntax.Function(tree, tokenList, exceptions);
+        syntax.Function();
         tree.print();
         for (Exception exception : exceptions) {
             logger.error(exception.toString() + "\n");
@@ -220,7 +220,7 @@ public class TestSyntax {
         TokenList<Token> tokenList = new TokenList<>(tokens);
         MyTree tree = new MyTree();
         List<Exception> exceptions = new ArrayList<>();
-        syntax.Program(tree, tokenList, exceptions);
+        syntax.Program();
         tree.print();
         for (Exception exception : exceptions) {
             logger.error(exception.toString() + "\n");

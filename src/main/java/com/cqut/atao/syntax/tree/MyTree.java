@@ -39,7 +39,6 @@ public class MyTree implements Serializable {
     }
 
     public void traceBack(){
-        // TODO
         // 可能存在空指针异常，需要处理
         this.curNode = this.curNode.getParent();
     }
