@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class TempVariable {
 
 
-    private Integer id;
+//    private Integer id;
 
     private String val;
 
@@ -32,8 +32,5 @@ public class TempVariable {
 
     }
 
-    public TempVariable(Integer id, String val) {
-        this.id = id;
-        this.val = val;
-    }
+
 }

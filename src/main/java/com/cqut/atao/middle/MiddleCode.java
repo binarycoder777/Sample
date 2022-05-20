@@ -27,23 +27,28 @@ public class MiddleCode {
     private Table<Const, Variable, Function> table = new Table<>();
 
     // 四元式表
-    private Map<String,Four> fourTable = new HashMap<>();
-
-    // 临时变量表
-    private Map<Integer,TempVariable> tempTable = new LinkedHashMap<Integer,TempVariable>(100,0.75f,true);
+    private List<Four> fourTable = new ArrayList<>();
 
 
     // 生成四元表达式
-    public void gencode(String key,String op,String arg1,String arg2,String result){
-        fourTable.put(key,new Four((NXQ++),op,arg1,arg2,result));
+    public void gencode(String op,String arg1,String arg2,String result){
+        fourTable.add(new Four((NXQ++),op,arg1,arg2,result));
     }
 
     // 生成一个临时变量
     public TempVariable newtemp(){
         TempVariable var = new TempVariable();
-        var.setId(++tmpID);
-        var.setVal("T"+tmpID);
-        tempTable.put(tmpID,var);
+        var.setTC(NXQ);
+        var.setFC(NXQ);
+        var.setVal("T"+(++tmpID));
+        return var;
+    }
+
+    // 生成一个临时变量
+    public TempVariable newtempOfNO(){
+        TempVariable var = new TempVariable();
+        var.setTC(NXQ);
+        var.setFC(NXQ);
         return var;
     }
 
@@ -52,36 +57,26 @@ public class MiddleCode {
     }
 
 
-    public String entryOfVarByName(String name){
-        for (Variable var: table.getVarTable()) {
-            if (var.getName().equals(name)){
-                return var.getId();
-            }
-        }
-        return null;
-    }
-
-    public void buckpatch(String key,int NXQ){
+    public void buckpatch(int key,int NXQ){
         Four four = fourTable.get(key);
         four.setResult((NXQ)+"");
     }
 
-    public void merge(String k1, String k2){
+    public void merge(int k1, int k2){
         Four p1 = fourTable.get(k1);
         Four p2 = fourTable.get(k2);
-        System.out.println(p1.getId()+" "+p2.getId());
         p2.setResult(p1.getId()+"");
     }
 
-    public List<Four> getFourTable(){
-        List<Four> list = new ArrayList<>();
-        for(Four four: fourTable.values()){
-            list.add(four);
+    public void fillVar(String key,String val){
+        List<Variable> list = table.getVarTable();
+        for(Variable v: list){
+            if (key.equals(v.getName())){
+                v.setVal(val);
+                break;
+            }
         }
-        Collections.sort(list,(a,b)->{
-            return a.getId() - b.getId();
-        });
-        return list;
     }
+
 
 }

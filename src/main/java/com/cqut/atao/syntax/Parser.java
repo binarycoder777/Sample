@@ -2,6 +2,7 @@ package com.cqut.atao.syntax;
 
 import com.cqut.atao.exception.ParseException;
 import com.cqut.atao.middle.MiddleCode;
+import com.cqut.atao.middle.table.TempVariable;
 import com.cqut.atao.middle.table.Variable;
 import com.cqut.atao.syntax.strategy.statement.Syntax;
 import com.cqut.atao.syntax.tree.MyTree;
@@ -33,6 +34,7 @@ public class Parser {
             syntax.DE();
             token = tokens.getCurToken();
         }
+        MiddleCode middleCode = syntax.getMiddleCode();
         syntax.Program();
     }
 
@@ -41,8 +43,4 @@ public class Parser {
         syntax.setTokens(tokens);
         syntax.setExceptions(exceptions);
     }
-
-
-
-
 }

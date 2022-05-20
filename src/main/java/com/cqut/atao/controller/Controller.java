@@ -1,6 +1,9 @@
 package com.cqut.atao.controller;
 
 import com.cqut.atao.lexical.Lexer;
+import com.cqut.atao.middle.MiddleCode;
+import com.cqut.atao.middle.table.Four;
+import com.cqut.atao.minic.miniC.MiniCV1;
 import com.cqut.atao.syntax.Parser;
 import com.cqut.atao.syntax.TokenList;
 import com.cqut.atao.syntax.strategy.statement.Syntax;
@@ -15,10 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +41,8 @@ public class Controller {
     private Parser parser = new Parser();
 
     private List<Token> tokens;
+
+    private MiddleCode middleCode;
 
     @FXML
     public void open(ActionEvent actionEvent) throws IOException {
@@ -84,10 +86,25 @@ public class Controller {
        }else {
            treeArea.setText(tree.toString());
        }
+       middleCode = parser.getSyntax().getMiddleCode();
     }
+
+
+    @FXML
+    public void middle(ActionEvent actionEvent) throws IOException {
+       treeArea.setText(middleCode.getFourTable().toString());
+    }
+
+    @FXML
+    public void table(ActionEvent actionEvent) throws IOException {
+        treeArea.setText(middleCode.getTable().getTable());
+    }
+
 
     private void refresh(){
         treeArea.setText("");
     }
+
+
 
 }

@@ -34,8 +34,10 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Run">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#lexer" text="Lexer" />
+                                <MenuItem mnemonicParsing="false" text="Lexer"  onAction="#lexer"/>
                                 <MenuItem mnemonicParsing="false" text="Syntax" onAction="#syntax"/>
+                                <MenuItem mnemonicParsing="false" text="Middle" onAction="#middle"/>
+                                <MenuItem mnemonicParsing="false" text="Table"  onAction="#table"/>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">

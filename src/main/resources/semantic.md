@@ -1,6 +1,6 @@
 #--------------------------------------LL(1)----------------------------------------------------------------------
 expression -> (AR) ar_A' AR' expression' | f ar_A' AR' expression' | !BO bo_A' BO' | c expression''''
-a''''-> ar_A' AR' expression' | expression'''
+expression''''-> ar_A' AR' expression' | expression'''
 expression'''-> (ar_D) ar_A' AR' expression' | = expression
 expression' -> d AR expression''| bo_A' BO' | 空
 expression''-> bo_A' BO' | 空 

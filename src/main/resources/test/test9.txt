@@ -1,0 +1,30 @@
+//�޶�����Ҫʹ�ò�ͬ�ı�����
+int factor(int);
+main()
+
+{
+
+   int n;
+	
+   n=read();
+
+   write(factor(n));
+
+}
+
+
+int factor(int m) {
+  int i,fa;
+  i=10;
+  if(m<1)
+{
+
+	fa=1;
+     }
+   else{
+       fa=m*factor(m-1);
+       }
+ return fa;
+    }  
+
+

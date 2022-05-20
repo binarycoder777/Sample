@@ -1,0 +1,17 @@
+//whileǶ��if���ԣ����������������ż���ĺ�
+int a = 1 ;
+
+main(){
+
+    int i = 1,sum=10,N ;
+    N = read();
+
+    while(i < N){
+       if(i%2 == 10){
+           sum = sum +i;
+       }
+       i = i + 1;
+    }
+    write(sum);
+}
+

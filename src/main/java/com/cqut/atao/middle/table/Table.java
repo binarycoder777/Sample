@@ -15,22 +15,40 @@ import java.util.List;
 @Data
 public class Table <A,B,C> {
 
-    private List<A> constTable = new ArrayList<>();
+    private List<Const> constTable = new ArrayList<>();
 
-    private List<B> varTable = new ArrayList<>();
+    private List<Variable> varTable = new ArrayList<>();
 
-    private List<C> functionTable = new ArrayList<>();
+    private List<Function> functionTable = new ArrayList<>();
 
-    public void addConst(A a){
+    public void addConst(Const a){
         constTable.add(a);
     }
 
-    public void addVar(B b){
-        varTable.add(b);
+    public void addVar(Variable b){
+        if (b.getType() != null){
+            varTable.add(b);
+        }
     }
 
-    public void addFun(C c){
+    public void addFun(Function c){
         functionTable.add(c);
+    }
+
+    public String getTable(){
+        String c = "常量表:";
+        for (Const con: constTable){
+            c += "\n"+con.toString();
+        }
+        String v = "变量表:";
+        for (Variable var: varTable){
+            v += "\n"+var.toString();
+        }
+        String f = "函数表:";
+        for (Function fun: functionTable){
+            f += "\n"+fun.toString();
+        }
+        return c + "\n" + v + "\n" + f + "\n";
     }
 
 }

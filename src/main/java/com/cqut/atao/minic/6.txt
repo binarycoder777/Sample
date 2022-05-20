@@ -1,0 +1,35 @@
+int main(){
+    int a,b;
+    a = 23;
+    while(a>2){
+        int x;
+        x = a+b;
+    }
+
+    if(a>=20){
+        b = 10;
+        a = a+b;
+    }
+
+
+    double num;
+    switch (num)
+    {
+       case 1:
+           num=1;
+       case 2:
+           num=2;
+       default:
+           num=3;
+    }
+
+
+    int i ;
+    for(i = 0; i < 10 ; i = i + 1)
+    {
+        b = b + 1;
+    }
+
+
+    return 0;
+}

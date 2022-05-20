@@ -105,16 +105,101 @@ public class TestParser {
     @Test
     public void testBO() {
         parser.getSyntax().setMiddleCode(middleCode);
-//        String text = "a < b || c < d && e > f";
+//        String text = "a < b && c < d && e > f";
         String text = "A && B && C > D";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
         List<Exception> exceptions = new ArrayList<>();
         parser.setPar(tree,tokenList,exceptions);
-        parser.getSyntax().BO();
+        parser.getSyntax().expression();
         tree.print();
         logger.error(middleCode.getFourTable().toString());
     }
+
+    @Test
+    public void testEX() {
+        parser.getSyntax().setMiddleCode(middleCode);
+        String text = "if(A && B && C > D) { i = i + 1;}";
+        lexer.lexicalAnalysis(text);
+        List<Token> tokens = lexer.getTokens();
+        TokenList<Token> tokenList = new TokenList<>(tokens);
+        List<Exception> exceptions = new ArrayList<>();
+        parser.setPar(tree,tokenList,exceptions);
+        parser.getSyntax().EX();
+        tree.print();
+        logger.error(middleCode.getFourTable().toString());
+    }
+
+    @Test
+    public void testPO() {
+        parser.getSyntax().setMiddleCode(middleCode);
+//        String text =
+//                "//if测试，输入两个数，将其中较大的数加100输出\n" +
+//                        "int a = 1 ;\n" +
+//                        "const int F = 1 ;\n" +
+//                        "\n" +
+//                        "main(){\n" +
+//                        "\n" +
+//                        "    int result ;\n" +
+//                        "\tint N = read() ;\n" +
+//                        "\tint M = read() ;\n" +
+//                        "    \n" +
+//                        "    if (M > N)result = M ;" +
+//                        "    else result = N;\n" +
+//                        "\ta = result + 100 ;\n" +
+//                        "\twrite(a);\n" +
+//                        "while(a < 10) a = a + 1;\n" +
+//                        "for(i=1;i<10;i=i+1) k = 10;\n" +
+//                        "do{ A = 10; } while A > 10;\n" +
+//                        "}";
+
+        String text = "//�\u07B6�����Ҫʹ�ò�ͬ�ı�����\n" +
+                "int factor(int);\n" +
+                "main()\n" +
+                "\n" +
+                "{\n" +
+                "\n" +
+                "   int n;\n" +
+                "\t\n" +
+                "   n=read();\n" +
+                "\n" +
+                "   write(factor(n));\n" +
+                "\n" +
+                "}\n" +
+                "\n" +
+                "\n" +
+                "int factor(int m) {\n" +
+                "  int i,fa;\n" +
+                "  i=10;\n" +
+                "  if(m<1)\n" +
+                "{\n" +
+                "\n" +
+                "\tfa=1;\n" +
+                "     }\n" +
+                "   else{\n" +
+                "       fa=m*factor(m-1);\n" +
+                "       }\n" +
+                "\n" +
+                "   return fa;\n" +
+                "}\n" +
+                "\n";
+        lexer.lexicalAnalysis(text);
+        List<Token> tokens = lexer.getTokens();
+        TokenList<Token> tokenList = new TokenList<>(tokens);
+        List<Exception> exceptions = new ArrayList<>();
+        parser.setPar(tree,tokenList,exceptions);
+        parser.syataxAnalysis(tree,tokenList,exceptions);
+        tree.print();
+        logger.error(middleCode.getFourTable().toString());
+        logger.error(middleCode.getTable().getTable());
+    }
+
+//    @Test
+//    public void testFillTable() {
+//        logger.error(middleCode.getTable().getConstTable().toString()+"\n\n");
+//        logger.error(middleCode.getTable().getFunctionTable().toString());
+//    }
+
 
 }
