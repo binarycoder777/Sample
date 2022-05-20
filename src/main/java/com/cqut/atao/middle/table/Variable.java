@@ -24,5 +24,8 @@ public class Variable {
     // 变量值
     private String val;
 
+    public String getId() {
+        return "T"+id;
+    }
 
 }

@@ -1,11 +1,14 @@
 package com.cqut.atao.syntax;
 
 import com.cqut.atao.exception.ParseException;
+import com.cqut.atao.middle.MiddleCode;
+import com.cqut.atao.middle.table.Variable;
 import com.cqut.atao.syntax.strategy.statement.Syntax;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.syntax.tree.TreeNode;
 import com.cqut.atao.token.Token;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +21,10 @@ import java.util.List;
  * @createTime 2022年05月01日 13:49:00
  */
 @Data
+@NoArgsConstructor
 public class Parser {
 
     private Syntax syntax = new Syntax();
-
-    public Parser() {
-
-    }
 
     public void syataxAnalysis(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions){
         setPar(tree,tokens,exceptions);
@@ -41,5 +41,8 @@ public class Parser {
         syntax.setTokens(tokens);
         syntax.setExceptions(exceptions);
     }
+
+
+
 
 }

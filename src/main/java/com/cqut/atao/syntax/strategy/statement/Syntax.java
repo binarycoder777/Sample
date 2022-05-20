@@ -2,18 +2,13 @@ package com.cqut.atao.syntax.strategy.statement;
 
 import com.cqut.atao.exception.ParseException;
 import com.cqut.atao.middle.MiddleCode;
-import com.cqut.atao.middle.table.Const;
-import com.cqut.atao.middle.table.Function;
-import com.cqut.atao.middle.table.Table;
-import com.cqut.atao.middle.table.Variable;
+import com.cqut.atao.middle.table.*;
 import com.cqut.atao.syntax.TokenList;
-import com.cqut.atao.syntax.strategy.expression.Expression;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.syntax.tree.TreeNode;
 import com.cqut.atao.token.Token;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.aspectj.weaver.ast.Var;
 
 import java.util.List;
 
@@ -25,6 +20,7 @@ import java.util.List;
  * @createTime 2022年05月13日 14:03:00
  */
 @Data
+@NoArgsConstructor
 public class Syntax {
     
     private MyTree tree;
@@ -34,12 +30,6 @@ public class Syntax {
     private List<Exception> exceptions;
 
     private MiddleCode middleCode = new MiddleCode();
-
-    public Syntax() {
-        this.tree = tree;
-        this.tokens = tokens;
-        this.exceptions = exceptions;
-    }
 
     public void math(MyTree tree, TokenList<Token> tokens) {
         tree.addChild(new TreeNode(tokens.getCurToken().getVal().toString()));
@@ -63,12 +53,13 @@ public class Syntax {
         return;
     }
 
-    public void expression() {
+    public TempVariable expression() {
+        TempVariable arg0 = new TempVariable();
         tree.addChild(new TreeNode("表达式"));
         Token token = tokens.getCurToken();
         if (token != null && "(".equals(token.getType())) {
             math(tree, tokens);
-            AR();
+            arg0 = AR();
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -76,49 +67,46 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少)", tokens.getCurToken()));
             }
-            ar_A1();
-            AR1();
-            expression1();
+            arg0 = ar_A1(arg0);
+            arg0 = AR1(arg0);
+            arg0 = expression1(arg0);
         } else if (token != null && ("字符串".equals(token.getType()) || "字符".equals(token.getType()) || "整数".equals(token.getType()) || "实数".equals(token.getType()))) {
+            arg0.setVal(token.getVal().toString());
             math(tree, tokens);
-            ar_A1();
-            AR1();
-            expression1();
+            arg0 = ar_A1(arg0);
+            arg0 = AR1(arg0);
+            arg0 = expression1(arg0);
         } else if (token != null && "标识符".equals(token.getType())) {
+            arg0.setVal(token.getVal().toString());
             math(tree, tokens);
-            expression4();
+            arg0 = expression4(arg0);
         } else if (token != null && "!".equals(token.getType())) {
             math(tree, tokens);
-            BO();
-            bo_A1();
-            BO1();
-        } else if (token != null) {
-            // error
+            arg0 = BO();
+            arg0 = bo_A1(arg0);
+            arg0 = BO1(arg0);
         }
         tree.traceBack();
+        return arg0;
     }
 
-    private void expression4() {
-        // tree.addChild(new TreeNode("expression4"));
+    private TempVariable expression4(TempVariable arg0) {
         Token token = tokens.getCurToken();
         if (token != null && ("(".equals(token.getType()) || "=".equals(token.getType()))) {
-            expression3();
+             return expression3(arg0);
         } else if (token != null && ("*".equals(token.getType()) || "/".equals(token.getType()) || "%".equals(token.getType()) || "+".equals(token.getType()) || "-".equals(token.getType()) || judgeD(token) || "&&".equals(token.getType()) || "||".equals(token.getType()))) {
-            ar_A1();
-            AR1();
-            expression1();
-        } else if (token != null) {
-            // error
+            arg0 = ar_A1(arg0);
+            arg0 = AR1(arg0);
+            return expression1(arg0);
         }
-        // tree.traceBack();
+        return arg0;
     }
 
-    private void expression3() {
-        // tree.addChild(new TreeNode("expression3"));
+    private TempVariable expression3(TempVariable arg0) {
         Token token = tokens.getCurToken();
         if (token != null && "(".equals(token.getType())) {
             math(tree, tokens);
-            ar_D();
+            ar_D(arg0);
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -126,90 +114,93 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少)", tokens.getCurToken()));
             }
-            ar_A1();
-            AR1();
-            expression1();
+            // 函数调用
+            TempVariable res = middleCode.newtemp();
+            middleCode.gencode(res.getId()+"","call",arg0.getVal(),null,res.getVal());
+            res = ar_A1(res);
+            res = AR1(res);
+            return expression1(res);
         } else if (token != null && "=".equals(token.getType())) {
-            math(tree, tokens);
-            expression();
-        } else if (token != null) {
-            // error
-        }
-        // tree.traceBack();
-    }
-
-    private void expression1() {
-        // tree.addChild(new TreeNode("expression1"));
-        Token token = tokens.getCurToken();
-        if (token != null && judgeD(token)) {
-            math(tree, tokens);
-            AR();
-            expression2();
-        } else if (token != null && ("&&".equals(token.getType()) || "||".equals(token.getType()))) {
-            bo_A1();
-            BO1();
-        } else if (token != null) {
-            // error
-        }
-        // tree.traceBack();
-    }
-
-    private void expression2() {
-        // tree.addChild(new TreeNode("expression2"));
-        bo_A1();
-        BO1();
-        // tree.traceBack();
-    }
-
-
-    private void AR() {
-        tree.addChild(new TreeNode("算术表达式"));
-        ar_A();
-        AR1();
-        tree.traceBack();
-    }
-
-
-    private void AR1() {
-        // tree.addChild(new TreeNode("AR1"));
-        Token token = tokens.getCurToken();
-        if (token != null && ("+".equals(token.getType()) || "-".equals(token.getType()))) {
             String op = token.getType();
             math(tree, tokens);
-            Variable arg2 = middleCode.newtemp();
-            AR();
-//            middleCode.gencode(op,arg1.getVal(),arg2.getVal(),result.getVal());
-        } else if (token != null) {
-            // error
+            TempVariable res = expression();
+            middleCode.gencode(res.getId()+"",op,res.getVal(),null,"变量入口:"+arg0.getVal());
+            return res;
         }
-        // tree.traceBack();
+        return arg0;
     }
 
-    private void ar_A() {
-        // tree.addChild(new TreeNode("ar_A"));
-        ar_B();
-        ar_A1();
-        // tree.traceBack();
+    private TempVariable expression1(TempVariable arg0) {
+        Token token = tokens.getCurToken();
+        if (token != null && judgeD(token)) {
+            TempVariable res = middleCode.newtemp();
+            String op = token.getVal().toString();
+            math(tree, tokens);
+            TempVariable arg1 = AR();
+            middleCode.gencode(res.getId()+"",op,arg0.getVal(),arg1.getVal(),res.getVal());
+            return expression2(res);
+        } else if (token != null && ("&&".equals(token.getType()) || "||".equals(token.getType()))) {
+            arg0 = bo_A1(arg0);
+            arg0 = BO1(arg0);
+        }
+        return arg0;
     }
 
-    private void ar_A1() {
-        // tree.addChild(new TreeNode("ar_A1"));
+    private TempVariable expression2(TempVariable arg0) {
+        arg0 = bo_A1(arg0);
+        arg0 = BO1(arg0);
+        return arg0;
+    }
+
+
+    public TempVariable AR() {
+        tree.addChild(new TreeNode("算术表达式"));
+        TempVariable arg0 = ar_A();
+        TempVariable res1 = AR1(arg0);
+        tree.traceBack();
+        return res1;
+    }
+
+
+    private TempVariable AR1(TempVariable arg1) {
+        Token token = tokens.getCurToken();
+        if (token != null && ("+".equals(token.getType()) || "-".equals(token.getType()))) {
+            TempVariable res = middleCode.newtemp();
+            String op = token.getType();
+            math(tree, tokens);
+            TempVariable arg2 = AR();
+//            System.out.println(res.getId());
+            middleCode.gencode(res.getId()+"",op,arg1.getVal(),arg2.getVal(),res.getVal());
+            return res;
+        }
+        return arg1;
+    }
+
+    private TempVariable ar_A() {
+        TempVariable arg1 = ar_B();
+        TempVariable res1 = ar_A1(arg1);
+        return res1;
+    }
+
+    private TempVariable ar_A1(TempVariable arg1) {
         Token token = tokens.getCurToken();
         if (token != null && ("*".equals(token.getType()) || "/".equals(token.getType()) || "%".equals(token.getType()))) {
+            TempVariable res = middleCode.newtemp();
+            String op = token.getType();
             math(tree, tokens);
-            ar_A();
-        } else if (token != null) {
-            // error
+            TempVariable arg2 = ar_A();
+            middleCode.gencode(res.getId()+"",op,arg1.getVal(),arg2.getVal(),res.getVal());
+            return res;
         }
-        // tree.traceBack();
+        return arg1;
     }
 
-    private void ar_B() {
-        // tree.addChild(new TreeNode("ar_B"));
+    private TempVariable ar_B() {
+        TempVariable var = new TempVariable();
         Token token = tokens.getCurToken();
         if (token != null && ("(".equals(token.getType()))) {
             math(tree, tokens);
-            AR();
+            var = AR();
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -218,22 +209,23 @@ public class Syntax {
                 exceptions.add(new ParseException("缺少)", tokens.getCurToken()));
             }
         } else if (token != null && ("字符串".equals(token.getType()) || "字符".equals(token.getType()) || "整数".equals(token.getType()) || "实数".equals(token.getType()))) {
+            var = new TempVariable(middleCode.getTempID(),token.getVal().toString());
             math(tree, tokens);
         } else if (token != null && ("标识符".equals(token.getType()))) {
+            TempVariable arg0 = new TempVariable(middleCode.getTempID(),token.getVal().toString());
             math(tree, tokens);
-            ar_B1();
-        } else if (token != null) {
-            // error
+            var = ar_B1(arg0);
         }
-        // tree.traceBack();
+        return var;
     }
 
-    private void ar_B1() {
-        // tree.addChild(new TreeNode("ar_B1"));
+    private TempVariable ar_B1(TempVariable arg0) {
         Token token = tokens.getCurToken();
         if (token != null && ("(".equals(token.getType()))) {
+            TempVariable res = middleCode.newtemp();
+            middleCode.gencode(res.getId()+"","call",arg0.getVal(),"",res.getVal());
             math(tree, tokens);
-            ar_D();
+            ar_D(arg0);
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -241,16 +233,16 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少)", tokens.getCurToken()));
             }
-        } else if (token != null) {
-            // error
+            return res;
         }
-        // tree.traceBack();
+        return arg0;
     }
 
     private void ar_C() {
         tree.addChild(new TreeNode("函数调用"));
         Token token = tokens.getCurToken();
         if (token != null && ("标识符".equals(token.getType()))) {
+            TempVariable arg = new TempVariable(middleCode.getTempID(),token.getVal().toString());
             math(tree, tokens);
             token = tokens.getCurToken();
             if (token != null && "(".equals(token.getType())) {
@@ -259,7 +251,7 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少(", tokens.getCurToken()));
             }
-            ar_D();
+            ar_D(arg);
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -267,40 +259,29 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少)", tokens.getCurToken()));
             }
-        } else if (token != null) {
-            // error
         }
         tree.traceBack();
     }
 
-    private void ar_D() {
-        // tree.addChild(new TreeNode("ar_D"));
+    private void ar_D(TempVariable arg0) {
         Token token = tokens.getCurToken();
         if (token != null && ("(".equals(token.getType()) || "标识符".equals(token.getType()) || judgeConst(token) || "!".equals(token.getType()))) {
-            ar_E();
-        } else if (token != null) {
-            // error
+            ar_E(arg0);
         }
-        // tree.traceBack();
     }
 
-    private void ar_E() {
-        // tree.addChild(new TreeNode("ar_E"));
-        expression();
-        ar_E1();
-        // tree.traceBack();
+    private void ar_E(TempVariable arg0) {
+        TempVariable arg = expression();
+        middleCode.gencode(arg0.getId()+"","para",arg.getVal(),null,arg0.getVal());
+        ar_E1(arg0);
     }
 
-    private void ar_E1() {
-        // tree.addChild(new TreeNode("ar_E1"));
+    private void ar_E1(TempVariable arg0) {
         Token token = tokens.getCurToken();
         if (token != null && ",".equals(token.getType())) {
             math(tree, tokens);
-            ar_E();
-        } else if (token != null) {
-            // error
+            ar_E(arg0);
         }
-        // tree.traceBack();
     }
 
     private void RE() {
@@ -317,69 +298,82 @@ public class Syntax {
         tree.traceBack();
     }
 
-    private void BO() {
+    public TempVariable BO() {
         tree.addChild(new TreeNode("布尔表达式"));
-        bo_A();
-        BO1();
+        TempVariable arg0 = bo_A();
+        TempVariable res = BO1(arg0);
         tree.traceBack();
+        return res;
     }
 
-    private void BO1() {
-        // tree.addChild(new TreeNode("BO1"));
+    private TempVariable BO1(TempVariable arg0) {
         Token token = tokens.getCurToken();
         if (token != null && "||".equals(token.getType())) {
+            String op = token.getType();
             math(tree, tokens);
-            BO();
-        } else if (token != null) {
-            // error
+            TempVariable arg1 = BO();
+            TempVariable res = middleCode.newtemp();
+            middleCode.gencode(res.getId()+"",op,arg0.getVal(),arg1.getVal(),res.getVal());
+            return res;
         }
-        // tree.traceBack();
+        return arg0;
     }
 
-    private void bo_A() {
-        // tree.addChild(new TreeNode("bo_A"));
-        bo_B();
-        bo_A1();
-        // tree.traceBack();
+    private TempVariable bo_A() {
+        TempVariable arg0 = bo_B();
+        TempVariable res = bo_A1(arg0);
+//        middleCode.merge(arg0.getId()+"j",res.getId()+"j");
+        return res;
     }
 
-    private void bo_A1() {
-        // tree.addChild(new TreeNode("bo_A1"));
+    private TempVariable bo_A1(TempVariable arg0) {
         Token token = tokens.getCurToken();
         if (token != null && "&&".equals(token.getType())) {
             math(tree, tokens);
-            BO();
-        } else if (token != null) {
-            // error
+            middleCode.buckpatch(arg0.getId()+"jnz",middleCode.getNXQ());
+            TempVariable arg1 = bo_A();
+            middleCode.merge(arg1.getId()+"j",arg0.getId()+"j");
+            return arg1;
         }
-        // tree.traceBack();
+        return arg0;
     }
 
-    private void bo_B() {
-        // tree.addChild(new TreeNode("bo_B"));
+    private TempVariable bo_B() {
         Token token = tokens.getCurToken();
+        TempVariable res = null;
         if (token != null && "！".equals(token.getType())) {
             math(tree, tokens);
-            BO();
+            TempVariable arg0 = BO();
+            res = middleCode.newtemp();
+            res.setTC(arg0.getFC());
+            res.setFC(arg0.getTC());
         } else if (token != null && ("(".equals(token.getType()) || judgeConst(token) || "标识符".equals(token.getType()))) {
-            AR();
-            bo_B1();
-        } else if (token != null) {
-            // error
+            TempVariable arg0 = AR();
+            res = bo_B1(arg0);
+            if (arg0.equals(res)){
+//                res.setTC(middleCode.getNXQ());
+//                res.setFC(middleCode.getNXQ()+1);
+                middleCode.gencode(res.getId()+"jnz","jnz","变量入口:"+arg0.getVal(),null,"0");
+                middleCode.gencode(res.getId()+"j","j",null,null,"0");
+            }
         }
-        // tree.traceBack();
+        return res;
     }
 
-    private void bo_B1() {
-        // tree.addChild(new TreeNode("bo_B1"));
+    private TempVariable bo_B1(TempVariable arg0) {
         Token token = tokens.getCurToken();
         if (token != null && judgeD(token)) {
+            String op = token.getType();
             math(tree, tokens);
-            AR();
-        } else if (token != null) {
-            // error
+            TempVariable arg1 = AR();
+            TempVariable res = middleCode.newtemp();
+            res.setTC(middleCode.getNXQ());
+            res.setFC(middleCode.getNXQ()+1);
+            middleCode.gencode(res.getId()+"j"+op,"j"+op,arg0.getVal(),arg1.getVal(),"0");
+            middleCode.gencode(res.getId()+"j","j",null,null,"0");
+            return res;
         }
-        // tree.traceBack();
+        return arg0;
     }
 
     private void AS() {
@@ -395,8 +389,6 @@ public class Syntax {
                 exceptions.add(new ParseException("缺少=", tokens.getCurToken()));
             }
             expression();
-        } else if (token != null) {
-            // error
         }
         tree.traceBack();
     }
@@ -754,7 +746,7 @@ public class Syntax {
             }
         } else if (token != null && "(".equals(token.getType())) {
             math(tree, tokens);
-            ar_D();
+            ar_D(null);
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);

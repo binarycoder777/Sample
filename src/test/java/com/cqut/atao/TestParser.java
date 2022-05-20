@@ -36,38 +36,43 @@ public class TestParser {
     MiddleCode middleCode = new MiddleCode();
 
 
-    @Before
+    @Test
     public void testProgramStatement() {
         parser.getSyntax().setMiddleCode(middleCode);
+//        String text = "// 双递归函数调用测试2：计算组合数\n" +
+//                "const int a = 10, b = 20;\n"+
+//                "const float c = 10, d = 20;\n"+
+//                "int min(int,int);\n" +
+//                "int max(float,float);\n" +
+//                "main()\n" +
+//                "{\n" +
+//                "   int m,k,result;\n" +
+//                "   const int hh = 20;\n" +
+//                "   m = read();\n" +
+//                "   k = read();\n" +
+//                "   result = comp(m,k);\n" +
+//                "   write(result);\n" +
+//                "}\n" +
+//                "\n" +
+//                "int comp(int n,int i) {\n" +
+//                "int a,b; \n" +
+//                "if(n < i || i > 10)\n" +
+//                "\t{\n" +
+//                "\t\treturn 1;\n" +
+//                "\t}\n" +
+//                "\t a = 3 + comp(n-1,i);\n" +
+//                "\t b = comp(n-1,i-1);\n" +
+//                "\treturn a + b; \n" +
+//                "}";
         String text = "// 双递归函数调用测试2：计算组合数\n" +
-                "const int a = 10, b = 20;\n"+
-                "const float c = 10, d = 20;\n"+
-                "int min(int,int);\n" +
-                "int max(float,float);\n" +
-                "main()\n" +
-                "{\n" +
-                "   int m,k,result;\n" +
-                "   const int hh = 20;\n" +
-                "   m = read();\n" +
-                "   k = read();\n" +
-                "   result = comp(m,k);\n" +
-                "   write(result);\n" +
-                "}\n" +
-                "\n" +
-                "int comp(int n,int i) {\n" +
-                "int a,b; \n" +
-                "if(n < i || i > 10)\n" +
-                "\t{\n" +
-                "\t\treturn 1;\n" +
-                "\t}\n" +
-                "\t a = comp(n-1,i);\n" +
-                "\t b = comp(n-1,i-1);\n" +
-                "\treturn a + b; \n" +
+                "const int a = 10, b = 20;main(){" +
+                "int a = 10 + b / 2;" +
                 "}";
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
         TokenList<Token> tokenList = new TokenList<>(tokens);
         List<Exception> exceptions = new ArrayList<>();
+
         parser.syataxAnalysis(tree, tokenList, exceptions);
         tree.print();
         for (Exception exception : exceptions) {
@@ -77,8 +82,39 @@ public class TestParser {
 
     @Test
     public void testFillTable() {
-        logger.error(middleCode.getTable().getConstTable().toString()+"\n\n");
-        logger.error(middleCode.getTable().getFunctionTable().toString());
+//        logger.error(middleCode.getTable().getConstTable().toString()+"\n\n");
+//        logger.error(middleCode.getTable().getFunctionTable().toString());
+        logger.error(middleCode.getFourTable().toString());
+    }
+
+
+    @Test
+    public void testAR() {
+        parser.getSyntax().setMiddleCode(middleCode);
+        String text = "A = B + C * (-D);";
+        lexer.lexicalAnalysis(text);
+        List<Token> tokens = lexer.getTokens();
+        TokenList<Token> tokenList = new TokenList<>(tokens);
+        List<Exception> exceptions = new ArrayList<>();
+        parser.setPar(tree,tokenList,exceptions);
+        parser.getSyntax().expression();
+        tree.print();
+        logger.error(middleCode.getFourTable().toString());
+    }
+
+    @Test
+    public void testBO() {
+        parser.getSyntax().setMiddleCode(middleCode);
+//        String text = "a < b || c < d && e > f";
+        String text = "A && B && C > D";
+        lexer.lexicalAnalysis(text);
+        List<Token> tokens = lexer.getTokens();
+        TokenList<Token> tokenList = new TokenList<>(tokens);
+        List<Exception> exceptions = new ArrayList<>();
+        parser.setPar(tree,tokenList,exceptions);
+        parser.getSyntax().BO();
+        tree.print();
+        logger.error(middleCode.getFourTable().toString());
     }
 
 }

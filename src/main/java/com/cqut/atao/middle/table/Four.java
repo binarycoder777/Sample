@@ -13,7 +13,7 @@ import lombok.Data;
 public class Four {
 
     // 编号
-    private String id;
+    private Integer id;
 
     // 运算符
     private String op;
@@ -37,11 +37,22 @@ public class Four {
     public Four() {
     }
 
-    public Four(String id, String op, String num1, String num2, String result) {
+    public Four(Integer id, String op, String num1, String num2, String result) {
         this.id = id;
         this.op = op;
         this.num1 = num1;
         this.num2 = num2;
         this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        return "\nFour{" +
+                "id='" + id + '\'' +
+                ", op='" + op + '\'' +
+                ", num1='" + num1 + '\'' +
+                ", num2='" + num2 + '\'' +
+                ", result='" + result + '\'' +
+                '}'+'\n';
     }
 }
