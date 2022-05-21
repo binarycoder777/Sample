@@ -1,27 +1,18 @@
 //if and while,½×³Ë
 main()
-
 {
 
   int i,factor,n;
-	
-  i=10;
-
-  n=read();
+  n = 10;
+  i = 1;
 
   if(n<1)
 {
-
 	factor=10;
-
-    }
-	
-    else {
-
-       factor=1;
-
-    }
-
+}
+else {
+    factor=1;
+}
   while(i<n)
 {
 
@@ -30,7 +21,4 @@ main()
     factor=factor*i;
 
     }
-
-  write(factor);
-
 }

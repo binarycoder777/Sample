@@ -24,10 +24,13 @@ public class MiddleCode {
     private int tmpID = 0;
 
     // 符号表
-    private Table<Const, Variable, Function> table = new Table<>();
+    private Table table = new Table();
 
     // 四元式表
     private List<Four> fourTable = new ArrayList<>();
+
+    // 临时表
+    private Map<String,TempVariable> tmpTable = new HashMap<>();
 
 
     // 生成四元表达式
@@ -41,21 +44,24 @@ public class MiddleCode {
         var.setTC(NXQ);
         var.setFC(NXQ);
         var.setVal("T"+(++tmpID));
+//        var.setType(type);
+//        table.getFunctionTable().get(functionName).add;
         return var;
     }
 
-    // 生成一个临时变量
-    public TempVariable newtempOfNO(){
-        TempVariable var = new TempVariable();
-        var.setTC(NXQ);
-        var.setFC(NXQ);
-        return var;
+
+    // 添加临时变量
+    public void addTemp(TempVariable variable){
+        tmpTable.put(variable.getVal(),variable);
     }
 
-    public int getTempID(){
-        return ++tmpID;
+    // 获取临时变量
+    public TempVariable getTemp(String key){
+        if (tmpTable.containsKey(key)){
+            return tmpTable.get(key);
+        }
+        return null;
     }
-
 
     public void buckpatch(int key,int NXQ){
         Four four = fourTable.get(key);
@@ -68,15 +74,6 @@ public class MiddleCode {
         p2.setResult(p1.getId()+"");
     }
 
-    public void fillVar(String key,String val){
-        List<Variable> list = table.getVarTable();
-        for(Variable v: list){
-            if (key.equals(v.getName())){
-                v.setVal(val);
-                break;
-            }
-        }
-    }
 
 
 }

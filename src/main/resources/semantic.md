@@ -28,7 +28,6 @@ bo_B'-> d AR | 空
 AS -> c = expression
 
 Statement -> DE | EX
-First(Statement)->{const,e,空,c,if,for,while,do,return,{,}
 DE -> const e de_E | e DE' | 空
 DE' -> c DE''
 DE''-> = Expression de_F' | de_F' | (de_H)

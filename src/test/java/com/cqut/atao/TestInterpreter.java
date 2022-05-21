@@ -1,31 +1,34 @@
 package com.cqut.atao;
 
+import com.cqut.atao.Interpreter.Interpreter;
 import com.cqut.atao.lexical.Lexer;
 import com.cqut.atao.lexical.configuration.ChairmanshipCoder;
 import com.cqut.atao.middle.MiddleCode;
+import com.cqut.atao.middle.table.Four;
+import com.cqut.atao.middle.table.Function;
 import com.cqut.atao.syntax.Parser;
 import com.cqut.atao.syntax.TokenList;
-import com.cqut.atao.syntax.strategy.statement.Syntax;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.token.Token;
-import org.junit.Before;
+import javafx.scene.control.TextArea;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author atao
  * @version 1.0.0
  * @ClassName TestStatement.java
- * @Description Parser
+ * @Description 测试解释器
  * @createTime 2022年05月05日 18:11:00
  */
-public class TestParser {
+public class TestInterpreter {
 
-    Logger logger = LoggerFactory.getLogger(TestParser.class);
+    Logger logger = LoggerFactory.getLogger(TestInterpreter.class);
 
     private Lexer lexer = new Lexer();
 
@@ -35,6 +38,7 @@ public class TestParser {
     MyTree tree = new MyTree();
 
     MiddleCode middleCode = new MiddleCode();
+
 
 
     @Test
@@ -143,9 +147,16 @@ public class TestParser {
         List<Exception> exceptions = new ArrayList<>();
         parser.setPar(tree,tokenList,exceptions);
         parser.syataxAnalysis(tree,tokenList,exceptions);
-        tree.print();
-        logger.error(middleCode.getFourTable().toString());
-        logger.error(middleCode.getTable().getTable());
+        // 测试解释器
+        List<Four> list = parser.getSyntax().getMiddleCode().getFourTable();
+        Map<String, Function> functionTable = parser.getSyntax().getMiddleCode().getTable().getFunctionTable();
+        // 打印四元式
+        logger.error(list.toString());
+
+        Interpreter interpreter = new Interpreter(null);
+        interpreter.interpreter(functionTable,list);
+        // 打印结果
+        logger.error(interpreter.getSb().toString());
     }
 
 

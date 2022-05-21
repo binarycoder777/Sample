@@ -34,7 +34,6 @@ public class Parser {
             syntax.DE();
             token = tokens.getCurToken();
         }
-        MiddleCode middleCode = syntax.getMiddleCode();
         syntax.Program();
     }
 

@@ -24,12 +24,22 @@ import java.util.List;
 @NoArgsConstructor
 public class Syntax {
 
+    // 变量的作用域
+    private int socp = 0;
+
+    // 函数名
+    private String functionName;
+
+    // 语法树
     private MyTree tree;
 
+    // tokens信息
     private TokenList<Token> tokens;
 
+    // 异常信息
     private List<Exception> exceptions;
 
+    // 中间代码对象
     private MiddleCode middleCode = new MiddleCode();
 
     public void math(MyTree tree, TokenList<Token> tokens) {
@@ -50,9 +60,6 @@ public class Syntax {
         return "字符串".equals(token.getType()) || "字符".equals(token.getType()) || "实数".equals(token.getType()) || "整数".equals(token.getType());
     }
 
-    private void pass() {
-        return;
-    }
 
     public TempVariable expression() {
         TempVariable arg0 = middleCode.newtemp();
@@ -107,7 +114,8 @@ public class Syntax {
         Token token = tokens.getCurToken();
         if (token != null && "(".equals(token.getType())) {
             math(tree, tokens);
-            arg0 = ar_D();
+            // 函数参数
+            ar_D();
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -117,7 +125,7 @@ public class Syntax {
             }
             // 函数调用
             TempVariable res = middleCode.newtemp();
-            middleCode.gencode("call",arg0.getVal(),null,res.getVal());
+            middleCode.gencode("call",arg0.getVal(),"",res.getVal());
             res = ar_A1(res);
             res = AR1(res);
             return expression1(res);
@@ -125,8 +133,8 @@ public class Syntax {
             String op = token.getType();
             math(tree, tokens);
             TempVariable res = expression();
-            middleCode.gencode(op,res.getVal(),null,"变量入口:"+arg0.getVal());
-            middleCode.fillVar(arg0.getVal(),res.getVal());
+            middleCode.gencode(op,res.getVal(),"","变量入口:"+arg0.getVal());
+//            middleCode.fillVar(arg0.getVal(),res.getVal());
             return res;
         }
         return arg0;
@@ -142,13 +150,13 @@ public class Syntax {
             res.setTC(middleCode.getNXQ());
             res.setFC(middleCode.getNXQ()+1);
             middleCode.gencode("j"+op,arg0.getVal(),arg1.getVal(),"0");
-            middleCode.gencode("j",null,null,"0");
+            middleCode.gencode("j","","","0");
             return expression2(res);
         } else if (token != null && ("&&".equals(token.getType()) || "||".equals(token.getType()))) {
             arg0.setTC(middleCode.getNXQ());
             arg0.setFC(middleCode.getNXQ()+1);
-            middleCode.gencode("jnz","变量入口:"+arg0.getVal(),null,"0");
-            middleCode.gencode("j",null,null,"0");
+            middleCode.gencode("jnz","变量入口:"+arg0.getVal(),"","0");
+            middleCode.gencode("j","","","0");
 
             arg0 = bo_A1(arg0);
             arg0 = BO1(arg0);
@@ -234,8 +242,8 @@ public class Syntax {
         if (token != null && ("(".equals(token.getType()))) {
             TempVariable res = middleCode.newtemp();
             math(tree, tokens);
-            TempVariable arg = ar_D();
-            middleCode.gencode("call",arg0.getVal(),arg.getVal(),res.getVal());
+            ar_D();
+            middleCode.gencode("call",arg0.getVal(),"",res.getVal());
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -273,32 +281,27 @@ public class Syntax {
         tree.traceBack();
     }
 
-    private TempVariable ar_D() {
+    private void ar_D() {
         Token token = tokens.getCurToken();
         if (token != null && ("(".equals(token.getType()) || "标识符".equals(token.getType()) || judgeConst(token) || "!".equals(token.getType()))) {
-            return ar_E();
+            ar_E();
         }
-        return new TempVariable();
     }
 
-    private TempVariable ar_E() {
+    private void ar_E() {
         TempVariable arg1 = expression();
         if (arg1 != null){
-            TempVariable arg2  = ar_E1();
-            TempVariable res = middleCode.newtemp();
-            middleCode.gencode("para",arg1.getVal(),arg2.getVal(),res.getVal());
-            return res;
+            middleCode.gencode("para",arg1.getVal(),"","");
         }
-        return ar_E1();
+        ar_E1();
     }
 
-    private TempVariable ar_E1() {
+    private void ar_E1() {
         Token token = tokens.getCurToken();
         if (token != null && ",".equals(token.getType())) {
             math(tree, tokens);
-            return ar_E();
+            ar_E();
         }
-        return new TempVariable();
     }
 
     private void RE() {
@@ -330,6 +333,7 @@ public class Syntax {
             math(tree, tokens);
             TempVariable arg1 = BO();
             TempVariable res = middleCode.newtemp();
+//            res.setType(arg0.getType());
             middleCode.gencode(op,arg0.getVal(),arg1.getVal(),res.getVal());
             return res;
         }
@@ -370,8 +374,8 @@ public class Syntax {
             if (arg0.equals(res)){
                 res.setTC(middleCode.getNXQ());
                 res.setFC(middleCode.getNXQ()+1);
-                middleCode.gencode("jnz","变量入口:"+arg0.getVal(),null,"0");
-                middleCode.gencode("j",null,null,"0");
+                middleCode.gencode("jnz","变量入口:"+arg0.getVal(),"","0");
+                middleCode.gencode("j","","","0");
             }
         }
         return res;
@@ -387,7 +391,7 @@ public class Syntax {
             res.setTC(middleCode.getNXQ());
             res.setFC(middleCode.getNXQ()+1);
             middleCode.gencode("j"+op,arg0.getVal(),arg1.getVal(),"0");
-            middleCode.gencode("j",null,null,"0");
+            middleCode.gencode("j","","","0");
             return res;
         }
         return arg0;
@@ -432,7 +436,7 @@ public class Syntax {
             }
             de_E();
         } else if (token != null && judgeE(token)) {
-            v = new Variable();
+            v = new Variable(socp);
             f = new Function();
             v.setType(token.getType());
             f.setReturnType(token.getType());
@@ -486,8 +490,8 @@ public class Syntax {
             v.setVal(arg1.getVal());
             de_F1();
             tree.traceBack();
-            middleCode.gencode("=",arg1.getVal(),null,"变量入口:"+arg.getVal());
-            middleCode.fillVar(arg.getVal(),arg1.getVal());
+            middleCode.gencode("=",arg1.getVal(),"","变量入口:"+arg.getVal());
+//            middleCode.fillVar(arg.getVal(),arg1.getVal());
             return arg1;
         } else if (token != null && (";".equals(token.getType()) || ",".equals(token.getType()))) {
             de_F1();
@@ -533,7 +537,7 @@ public class Syntax {
     }
 
     private Variable getNewVar(Variable c) {
-        Variable newV = new Variable();
+        Variable newV = new Variable(socp);
         newV.setType(c.getType());
         return newV;
     }
@@ -594,11 +598,11 @@ public class Syntax {
     private void de_F1() {
         Token token = tokens.getCurToken();
         if (token != null && (";".equals(token.getType()))) {
-            middleCode.getTable().addVar(v);
-            v = new Variable();
+            middleCode.getTable().addVar(functionName,v);
+            v = new Variable(socp);
             math(tree, tokens);
         } else if (token != null && (",".equals(token.getType()))) {
-            middleCode.getTable().addVar(v);
+            middleCode.getTable().addVar(functionName,v);
             v = getNewVar(v);
             math(tree, tokens);
             de_F();
@@ -690,6 +694,7 @@ public class Syntax {
         } else if (token != null && ("if".equals(token.getType()) || "for".equals(token.getType()) || "while".equals(token.getType()) || "do".equals(token.getType()) || "return".equals(token.getType()))) {
             arg = ex_B(arg);
         } else if (token != null && ("{".equals(token.getType()))) {
+            socp++;
             math(tree, tokens);
             arg = ex_I(arg);
             token = tokens.getCurToken();
@@ -699,6 +704,7 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少}", tokens.getCurToken()));
             }
+            socp--;
         }
         tree.traceBack();
         return arg;
@@ -727,7 +733,7 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少;", tokens.getCurToken()));
             }
-            middleCode.gencode("=",arg1.getVal(),null,arg0.getVal());
+            middleCode.gencode("=",arg1.getVal(),"",arg0.getVal());
             return arg1;
         } else if (token != null && "(".equals(token.getType())) {
             math(tree, tokens);
@@ -739,6 +745,8 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少)", tokens.getCurToken()));
             }
+            TempVariable res = middleCode.newtemp();
+            middleCode.gencode("call",arg0.getVal(),"",res.getVal());
             token = tokens.getCurToken();
             if (token != null && ";".equals(token.getType())) {
                 math(tree, tokens);
@@ -746,7 +754,7 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少;", tokens.getCurToken()));
             }
-            return arg0;
+            return res;
         }
         return arg0;
     }
@@ -773,6 +781,7 @@ public class Syntax {
     }
 
     private TempVariable ex_C(TempVariable arg) {
+        socp++;
         Token token = tokens.getCurToken();
         if (token != null && "{".equals(token.getType())) {
             math(tree, tokens);
@@ -785,6 +794,7 @@ public class Syntax {
                 exceptions.add(new ParseException("缺少}", tokens.getCurToken()));
             }
         }
+        socp--;
         return arg;
     }
 
@@ -965,11 +975,11 @@ public class Syntax {
     private void ex_H1() {
         Token token = tokens.getCurToken();
         if (token != null && ";".equals(token.getType())) {
-            middleCode.gencode("ret",null,null,null);
+            middleCode.gencode("ret","","","");
             math(tree, tokens);
         } else if (token != null && ("(".equals(token.getType()) || "!".equals(token.getType()) || "标识符".equals(token.getType()) || judgeConst(token))) {
             TempVariable res = expression();
-            middleCode.gencode("ret",res.getVal(),null,null);
+            middleCode.gencode("ret",res.getVal(),"","");
             token = tokens.getCurToken();
             if (token != null && ";".equals(token.getType())) {
                 math(tree, tokens);
@@ -1007,6 +1017,7 @@ public class Syntax {
 
 
     private TempVariable ex_L(TempVariable arg) {
+        socp++;
         Token token = tokens.getCurToken();
         if (token != null && "{".equals(token.getType())) {
             math(tree, tokens);
@@ -1019,6 +1030,7 @@ public class Syntax {
                 exceptions.add(new ParseException("缺少}", tokens.getCurToken()));
             }
         }
+        socp--;
         return arg;
     }
 
@@ -1123,7 +1135,11 @@ public class Syntax {
             math(tree, tokens);
             token = tokens.getCurToken();
             // 函数定义
-            middleCode.gencode(token.getVal().toString(),null,null,null);
+            middleCode.gencode(token.getVal().toString(),"","","");
+            functionName = token.getVal().toString();
+            // 定义函数入口四元式
+            middleCode.getTable().getFunctionTable().get(functionName).setPosition(middleCode.getNXQ());
+
             if (token != null && "标识符".equals(token.getType())) {
                 math(tree, tokens);
             } else {
@@ -1163,7 +1179,7 @@ public class Syntax {
         Token token = tokens.getCurToken();
         if (token != null && (judgeE(token))) {
             // 参数
-            v = new Variable();
+            v = new Variable(socp);
             // 类型
             v.setType(token.getType());
             math(tree, tokens);
@@ -1172,7 +1188,7 @@ public class Syntax {
                 // 参数名
                 v.setName(token.getVal().toString());
                 // 加入变量表
-                middleCode.getTable().addVar(v);
+                middleCode.getTable().addVar(functionName,v);
                 math(tree, tokens);
             } else {
                 tokens.match();
@@ -1197,7 +1213,15 @@ public class Syntax {
         DE();
         Token token = tokens.getCurToken();
         if (token != null && ("main".equals(token.getVal().toString()))) {
-            middleCode.gencode("main",null,null,null);
+            // 函数定义
+            middleCode.gencode("main","","","");
+            functionName = "main";
+            Function function = new Function();
+            function.setFunctionName("main");
+            middleCode.getTable().addFun(function);
+            // 函数入口
+            middleCode.getTable().getFunctionTable().get(functionName).setPosition(middleCode.getNXQ());
+
             math(tree, tokens);
         } else {
             tokens.match();
@@ -1218,7 +1242,7 @@ public class Syntax {
             exceptions.add(new ParseException("缺少)", tokens.getCurToken()));
         }
         ex_C(arg);
-        middleCode.gencode("sys",null,null,null);
+        middleCode.gencode("sys","","","");
         po_A(arg);
         tree.traceBack();
     }

@@ -8,20 +8,26 @@ import lombok.NoArgsConstructor;
  * @author atao
  * @version 1.0.0
  * @ClassName TempVariable.java
- * @Description TODO
+ * @Description 临时变量
  * @createTime 2022年05月19日 22:19:00
  */
 @Data
 @AllArgsConstructor
 public class TempVariable {
 
-
-//    private Integer id;
-
+    // 名称
     private String val;
 
+    // 值
+    private String res;
+
+    // 类型
+    private String type;
+
+    // 真出口
     private int TC;
 
+    // 假出口
     private int FC;
 
     public TempVariable(String val) {
