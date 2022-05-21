@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
  * @author atao
  * @version 1.0.0
  * @ClassName ChainDelimiter.java
- * @Description TODO
+ * @Description 界符过滤
  * @createTime 2022年04月19日 20:02:00
  */
 @NoArgsConstructor

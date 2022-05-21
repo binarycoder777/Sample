@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  * @author atao
  * @version 1.0.0
  * @ClassName Chain.java
- * @Description TODO
+ * @Description 链
  * @createTime 2022年04月19日 11:18:00
  */
 @Data

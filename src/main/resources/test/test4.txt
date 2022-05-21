@@ -1,0 +1,16 @@
+//forǶ��if,��1��������N�������������ĺ�
+main()
+
+{
+  int i,N,sum = 10;
+  N = read();
+  for(i=1;i<N;i=i+1)
+{
+
+     if(i%2 == 1)
+	sum = sum+i;
+    }
+
+  write(sum);
+
+}

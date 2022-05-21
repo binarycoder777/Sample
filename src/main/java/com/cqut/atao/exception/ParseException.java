@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author atao
  * @version 1.0.0
  * @ClassName ParseException.java
- * @Description TODO
+ * @Description 解析异常
  * @createTime 2022年04月19日 11:32:00
  */
 public class ParseException extends RuntimeException{
