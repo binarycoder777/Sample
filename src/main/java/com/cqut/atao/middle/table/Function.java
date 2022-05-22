@@ -1,7 +1,6 @@
 package com.cqut.atao.middle.table;
 
 import lombok.Data;
-import org.aspectj.weaver.ast.Var;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +48,14 @@ public class Function {
         if (b.getType() != null){
             String key = b.getName();
             varTable.put(key,b);
+        }
+    }
+
+    // 添加参数到参数列表
+    public void addPara(Variable b){
+        if (b.getType() != null){
+            String key = b.getName();
+            args.put(key,b);
         }
     }
 

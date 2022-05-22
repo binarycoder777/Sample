@@ -4,8 +4,8 @@ int a = 1 ;
 main(){
 
     int result ;
-	int N = read() ;
-	int M = read() ;
+	int N = 10 ;
+	int M = 20 ;
     
     if (M > N)result = M ;
 	else result = N;
@@ -13,3 +13,4 @@ main(){
 	write(a);
 
 }
+

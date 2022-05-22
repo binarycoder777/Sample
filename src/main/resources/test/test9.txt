@@ -1,29 +1,27 @@
+//递归函数调用的测试1，求阶乘，测试两个函数是否限定了需要使用不同的变量名m和n
+//使用int类型，值要小于65536
+//输入值n<=8
 int factor(int);
 main()
 
 {
 
    int n;
-	
-   n=read();
+
+   n=10;
 
    write(factor(n));
 
 }
 
-
 int factor(int m) {
-  int i,fa;
-  i=10;
-  if(m<1)
-{
-
+  int fa;
+  if(m < 2) {
 	fa=1;
-     }
+    }
    else{
        fa=m*factor(m-1);
        }
- return fa;
-    }  
-
+   return fa;
+}
 

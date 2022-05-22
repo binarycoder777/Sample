@@ -34,6 +34,13 @@ public class Table {
         }
     }
 
+    // 添加参数到函数的参数列表
+    public void addPara(String functionName,Variable b){
+        if (functionTable.containsKey(functionName)){
+            functionTable.get(functionName).addPara(b);
+        }
+    }
+
     public void addFun(Function c){
         functionTable.put(c.getFunctionName(),c);
     }

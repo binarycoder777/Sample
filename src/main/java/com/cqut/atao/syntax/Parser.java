@@ -1,17 +1,11 @@
 package com.cqut.atao.syntax;
 
-import com.cqut.atao.exception.ParseException;
-import com.cqut.atao.middle.MiddleCode;
-import com.cqut.atao.middle.table.TempVariable;
-import com.cqut.atao.middle.table.Variable;
 import com.cqut.atao.syntax.strategy.statement.Syntax;
 import com.cqut.atao.syntax.tree.MyTree;
-import com.cqut.atao.syntax.tree.TreeNode;
 import com.cqut.atao.token.Token;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

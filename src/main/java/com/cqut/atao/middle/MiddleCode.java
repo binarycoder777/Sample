@@ -1,11 +1,12 @@
 package com.cqut.atao.middle;
 
 import com.cqut.atao.middle.table.*;
-import com.cqut.atao.syntax.tree.MyTree;
 import lombok.Data;
-import org.aspectj.weaver.ast.Var;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author atao
@@ -34,7 +35,17 @@ public class MiddleCode {
 
 
     // 生成四元表达式
-    public void gencode(String op,String arg1,String arg2,String result){
+    public void gencode(String functionName,String op,String arg1,String arg2,String result){
+        if (tmpTable.containsKey(result)){
+            Function function  = table.getFunctionTable().get(functionName);
+            Variable variable = new Variable();
+            variable.setName(result);
+            variable.setVal(result);
+            if (function.getVarTable().containsKey(arg1)){
+                variable.setType(function.getVarTable().get(arg1).getType());
+            }
+            function.addVar(variable);
+        }
         fourTable.add(new Four((NXQ++),op,arg1,arg2,result));
     }
 
@@ -44,8 +55,7 @@ public class MiddleCode {
         var.setTC(NXQ);
         var.setFC(NXQ);
         var.setVal("T"+(++tmpID));
-//        var.setType(type);
-//        table.getFunctionTable().get(functionName).add;
+        tmpTable.put(var.getVal(),var);
         return var;
     }
 

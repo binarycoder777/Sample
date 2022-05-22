@@ -2,10 +2,7 @@ package com.cqut.atao.middle.table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.apache.catalina.LifecycleState;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -39,6 +36,12 @@ public class Variable {
 
     public Variable() {
 
+    }
+
+    public Variable(TempVariable variable) {
+        this.name = variable.getVal();
+        this.val = variable.getVal();
+        this.type = variable.getType();
     }
 
     public Variable(int socp) {

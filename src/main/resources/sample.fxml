@@ -38,6 +38,7 @@
                                 <MenuItem mnemonicParsing="false" text="Syntax" onAction="#syntax"/>
                                 <MenuItem mnemonicParsing="false" text="Middle" onAction="#middle"/>
                                 <MenuItem mnemonicParsing="false" text="Table"  onAction="#table"/>
+                                <MenuItem mnemonicParsing="false" text="Interpreter"  onAction="#interpreter"/>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">

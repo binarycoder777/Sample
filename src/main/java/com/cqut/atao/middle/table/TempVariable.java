@@ -2,7 +2,6 @@ package com.cqut.atao.middle.table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author atao

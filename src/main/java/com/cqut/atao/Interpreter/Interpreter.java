@@ -6,11 +6,9 @@ import com.cqut.atao.middle.table.Variable;
 import javafx.scene.control.TextArea;
 import lombok.Data;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.lang.String;
 
 /**
  * @author atao
@@ -29,8 +27,10 @@ public class Interpreter {
     private String retVal;					// 返回值
     private TextArea textArea;              // 文本域
     private StringBuilder sb;               // 输入和输出缓冲区
+    private List<String> paraList;          // 参数列表
+    private String returnVal;               // 返回值
 
-    public Interpreter (TextArea text) {
+    public Interpreter(TextArea text) {
         new ASCII();
         this.textArea = text;
     }
@@ -41,6 +41,7 @@ public class Interpreter {
         sb = new StringBuilder();
         activityStack = new ArrayList<>();
         varStack = new ArrayList<>();
+        paraList = new ArrayList<>();
         // main函数入栈
         activityStack.add(new Activity("main", 0, funcsInfoMap.get("main").getPosition()-1));
         // 当前活动栈
@@ -51,7 +52,7 @@ public class Interpreter {
         // 将 main 函数所有变量压栈
         for (String var : funcInfo.vars) {
             String type = funcInfo.getVarInfo(var).getType();
-            varStack.add(new Variable(type));
+            varStack.add(funcInfo.getVarInfo(var));
         }
         // 解释执行
         while (!activityStack.isEmpty() && curActivity.now < fourItemList.size()) {
@@ -66,7 +67,7 @@ public class Interpreter {
             // 存储结果
             String result = fourItem.getResult();
             // 结果类型
-            String resultType = getType(fourItem.getResult());
+            String resultType = getType(fourItem.getNum1());
             // 结果值
             String resultVal = getVal(result);
             // 假
@@ -74,6 +75,7 @@ public class Interpreter {
             // 真
             String t = "1";
             // 解释执行
+            if (!"para".equals(op) && !"call".equals(op)) paraList.clear();
             switch(op) {
                 case "+" :
                     if (resultType.equals("int")) {
@@ -188,6 +190,16 @@ public class Interpreter {
                         curActivity.now = Integer.parseInt(result);
                     }
                     break;
+                case "j==" :
+                    if (Integer.parseInt(arg1Val) == Integer.parseInt(arg2Val)){
+                        curActivity.now = Integer.parseInt(result);
+                    }
+                    break;
+                case "j!=" :
+                    if (Integer.parseInt(arg1Val) != Integer.parseInt(arg2Val)){
+                        curActivity.now = Integer.parseInt(result);
+                    }
+                    break;
                 case "j" :
                     curActivity.now = Integer.parseInt(result);
                     break;
@@ -199,12 +211,15 @@ public class Interpreter {
                     if (arg1Val.equals("0"))
                         curActivity.now = Integer.parseInt(result) - 1;
                     break;
+                case "para":
+                    paraList.add(arg1Val);
+                    break;
                 case "print" :
                     if (resultType.equals("char"))
                         resultVal = (char)Integer.parseInt(resultVal) + "";
                     else if (resultType.equals("string"))
                         resultVal = resultVal.substring(1, resultVal.length()-1);
-//                    textArea.append(resultVal + "\n");
+//                   textArea.append(resultVal + "\n");
                     sb = new StringBuilder(textArea.getText());
                     textArea.setText(sb.toString());
                     break;
@@ -237,27 +252,39 @@ public class Interpreter {
                     }
                     break;
                 case "call":
-                    if (!curActivity.flag) {
+                    if ("write".equals(arg1Val)){
+                        textArea.setText(paraList.toString());
+                    }else if (!curActivity.flag) {
                         curActivity.now--;
                         curActivity.flag = true;
 
-                        if (!arg2Val.isEmpty())
-                            arg2Val = arg2Val.substring(1, arg2Val.length()-1);
-                        String[] args = arg2Val.replace(" ", "").split(",");
-
+                        // 获取实参
+                        String[] args = new String[paraList.size()];
+                        for (int i=0;i<paraList.size();++i){
+                            args[i] = paraList.get(i);
+                        }
                         for (int i = 0; i < args.length; i++) {
                             args[i] = getVal(args[i]);
                         }
+                        // 替换形参
+                        int tmpK = 0;
+                        Map<String,Variable> variables = funcsInfoMap.get(arg1Val).getArgs();
+                        for(Variable variable: variables.values()){
+                            variable.setVal(args[tmpK++]);
+                        }
+                        // 存储返回值
+
 
                         activityStack.add(new Activity(arg1Val, varStack.size(), funcsInfoMap.get(arg1Val).getPosition() - 1));
                         curActivity = activityStack.get(activityStack.size() - 1);
                         curActivity.start = varStack.size();
                         funcInfo = funcsInfoMap.get(arg1Val);
-
-
-                        for (int i = 0; i < funcInfo.getArgs().size(); i++) {
-                            setVal(funcInfo.getArgs().get(i).getVal(), args[i]);
+                        funcInfo.fillVars();
+                        for (String var : funcInfo.vars) {
+                            Variable v = funcInfo.getVarInfo(var);
+                            varStack.add(v);
                         }
+
 
                     } else {
                         curActivity.flag = false;
@@ -266,8 +293,6 @@ public class Interpreter {
                     break;
             }
         }
-
-        textArea.setText("运行结束\n");
     }
 
     private String getVal(String id) {

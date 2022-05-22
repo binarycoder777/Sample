@@ -1,19 +1,21 @@
-//ifǶ��for��while,�������������N��Ȼ������ѡ��1������1��N�������������ĺͣ�����2��������ż���ĺ�,�������0
+//if嵌套for和while,首先输入给定数N，
+//输入选择1计算求1到N以内所有奇数的和
+//输入2计算所有偶数的和,否则输出0
 main()
-
 {
-  int i,N,sum = 10,choice=10;
-  N = read();
-  choice=read();
+  int i,N,sum,choice;
+  sum = 1;
+  choice = 1;
+  N = 10;
   if(choice == 1) {
-      for(i=1;i<N;i=i+1)
+      for(i=1;i< N;i=i+1)
       {
-         if(i%2 == 1)
-	    sum = sum+i;
+         if(i%2 == 1){
+            sum = sum+i;
+         }
       }
-  }
-  else if(choice == 2){
-      i=0;
+  }else{
+      i=1;
       while(i<N){
       sum = sum + i;
       i = i + 2;

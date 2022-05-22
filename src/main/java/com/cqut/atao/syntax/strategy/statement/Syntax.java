@@ -2,14 +2,16 @@ package com.cqut.atao.syntax.strategy.statement;
 
 import com.cqut.atao.exception.ParseException;
 import com.cqut.atao.middle.MiddleCode;
-import com.cqut.atao.middle.table.*;
+import com.cqut.atao.middle.table.Const;
+import com.cqut.atao.middle.table.Function;
+import com.cqut.atao.middle.table.TempVariable;
+import com.cqut.atao.middle.table.Variable;
 import com.cqut.atao.syntax.TokenList;
 import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.syntax.tree.TreeNode;
 import com.cqut.atao.token.Token;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.aspectj.weaver.ast.Var;
 
 import java.util.List;
 
@@ -125,7 +127,12 @@ public class Syntax {
             }
             // 函数调用
             TempVariable res = middleCode.newtemp();
-            middleCode.gencode("call",arg0.getVal(),"",res.getVal());
+            middleCode.gencode(functionName,"call",arg0.getVal(),"",res.getVal());
+            // 增加返回值变量
+            Variable variable = new Variable(res);
+            variable.setType("int");
+            middleCode.getTable().getFunctionTable().get(functionName).addVar(variable);
+
             res = ar_A1(res);
             res = AR1(res);
             return expression1(res);
@@ -133,7 +140,7 @@ public class Syntax {
             String op = token.getType();
             math(tree, tokens);
             TempVariable res = expression();
-            middleCode.gencode(op,res.getVal(),"","变量入口:"+arg0.getVal());
+            middleCode.gencode(functionName,op,res.getVal(),"",arg0.getVal());
 //            middleCode.fillVar(arg0.getVal(),res.getVal());
             return res;
         }
@@ -149,14 +156,14 @@ public class Syntax {
             TempVariable arg1 = AR();
             res.setTC(middleCode.getNXQ());
             res.setFC(middleCode.getNXQ()+1);
-            middleCode.gencode("j"+op,arg0.getVal(),arg1.getVal(),"0");
-            middleCode.gencode("j","","","0");
+            middleCode.gencode(functionName,"j"+op,arg0.getVal(),arg1.getVal(),"0");
+            middleCode.gencode(functionName,"j","","","0");
             return expression2(res);
         } else if (token != null && ("&&".equals(token.getType()) || "||".equals(token.getType()))) {
             arg0.setTC(middleCode.getNXQ());
             arg0.setFC(middleCode.getNXQ()+1);
-            middleCode.gencode("jnz","变量入口:"+arg0.getVal(),"","0");
-            middleCode.gencode("j","","","0");
+            middleCode.gencode(functionName,"jnz",arg0.getVal(),"","0");
+            middleCode.gencode(functionName,"j","","","0");
 
             arg0 = bo_A1(arg0);
             arg0 = BO1(arg0);
@@ -188,7 +195,7 @@ public class Syntax {
             math(tree, tokens);
             TempVariable arg2 = AR();
 //            System.out.println(res.getId());
-            middleCode.gencode(op,arg1.getVal(),arg2.getVal(),res.getVal());
+            middleCode.gencode(functionName,op,arg1.getVal(),arg2.getVal(),res.getVal());
             return res;
         }
         return arg1;
@@ -207,7 +214,7 @@ public class Syntax {
             String op = token.getType();
             math(tree, tokens);
             TempVariable arg2 = ar_A();
-            middleCode.gencode(op,arg1.getVal(),arg2.getVal(),res.getVal());
+            middleCode.gencode(functionName,op,arg1.getVal(),arg2.getVal(),res.getVal());
             return res;
         }
         return arg1;
@@ -219,6 +226,9 @@ public class Syntax {
         if (token != null && ("(".equals(token.getType()))) {
             math(tree, tokens);
             var = AR();
+            // 临时变量
+//            Variable variable = new Variable(var);
+//            middleCode.getTable().getFunctionTable().get(functionName).addVar(variable);
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -243,7 +253,12 @@ public class Syntax {
             TempVariable res = middleCode.newtemp();
             math(tree, tokens);
             ar_D();
-            middleCode.gencode("call",arg0.getVal(),"",res.getVal());
+            middleCode.gencode(functionName,"call",arg0.getVal(),"",res.getVal());
+            // 增加返回值变量
+            Variable variable = new Variable(res);
+            variable.setType("int");
+            middleCode.getTable().getFunctionTable().get(functionName).addVar(variable);
+
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -290,8 +305,12 @@ public class Syntax {
 
     private void ar_E() {
         TempVariable arg1 = expression();
+        // 增加临时变量
+        Variable variable = new Variable(arg1);
+        variable.setType("int");
+        middleCode.getTable().getFunctionTable().get(functionName).addVar(variable);
         if (arg1 != null){
-            middleCode.gencode("para",arg1.getVal(),"","");
+            middleCode.gencode(functionName,"para",arg1.getVal(),"","");
         }
         ar_E1();
     }
@@ -334,7 +353,7 @@ public class Syntax {
             TempVariable arg1 = BO();
             TempVariable res = middleCode.newtemp();
 //            res.setType(arg0.getType());
-            middleCode.gencode(op,arg0.getVal(),arg1.getVal(),res.getVal());
+            middleCode.gencode(functionName,op,arg0.getVal(),arg1.getVal(),res.getVal());
             return res;
         }
         return arg0;
@@ -374,8 +393,8 @@ public class Syntax {
             if (arg0.equals(res)){
                 res.setTC(middleCode.getNXQ());
                 res.setFC(middleCode.getNXQ()+1);
-                middleCode.gencode("jnz","变量入口:"+arg0.getVal(),"","0");
-                middleCode.gencode("j","","","0");
+                middleCode.gencode(functionName,"jnz",arg0.getVal(),"","0");
+                middleCode.gencode(functionName,"j","","","0");
             }
         }
         return res;
@@ -390,8 +409,8 @@ public class Syntax {
             TempVariable res = middleCode.newtemp();
             res.setTC(middleCode.getNXQ());
             res.setFC(middleCode.getNXQ()+1);
-            middleCode.gencode("j"+op,arg0.getVal(),arg1.getVal(),"0");
-            middleCode.gencode("j","","","0");
+            middleCode.gencode(functionName,"j"+op,arg0.getVal(),arg1.getVal(),"0");
+            middleCode.gencode(functionName,"j","","","0");
             return res;
         }
         return arg0;
@@ -490,7 +509,7 @@ public class Syntax {
             v.setVal(arg1.getVal());
             de_F1();
             tree.traceBack();
-            middleCode.gencode("=",arg1.getVal(),"","变量入口:"+arg.getVal());
+            middleCode.gencode(functionName,"=",arg1.getVal(),"",arg.getVal());
 //            middleCode.fillVar(arg.getVal(),arg1.getVal());
             return arg1;
         } else if (token != null && (";".equals(token.getType()) || ",".equals(token.getType()))) {
@@ -713,9 +732,9 @@ public class Syntax {
     private TempVariable ex_A(TempVariable arg) {
         Token token = tokens.getCurToken();
         if (token != null && "标识符".equals(token.getType())) {
-            math(tree, tokens);
             arg = new TempVariable();
             arg.setVal(token.getVal().toString());
+            math(tree, tokens);
             arg = ex_A1(arg);
         }
         return arg;
@@ -726,6 +745,11 @@ public class Syntax {
         if (token != null && "=".equals(token.getType())) {
             math(tree, tokens);
             TempVariable arg1 = expression();
+            // 添加临时变量
+            Variable variable = new Variable(arg1);
+            variable.setType("int");
+            middleCode.getTable().getFunctionTable().get(functionName).addVar(variable);
+
             token = tokens.getCurToken();
             if (token != null && ";".equals(token.getType())) {
                 math(tree, tokens);
@@ -733,7 +757,7 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少;", tokens.getCurToken()));
             }
-            middleCode.gencode("=",arg1.getVal(),"",arg0.getVal());
+            middleCode.gencode(functionName,"=",arg1.getVal(),"",arg0.getVal());
             return arg1;
         } else if (token != null && "(".equals(token.getType())) {
             math(tree, tokens);
@@ -746,7 +770,12 @@ public class Syntax {
                 exceptions.add(new ParseException("缺少)", tokens.getCurToken()));
             }
             TempVariable res = middleCode.newtemp();
-            middleCode.gencode("call",arg0.getVal(),"",res.getVal());
+            middleCode.gencode(functionName,"call",arg0.getVal(),"",res.getVal());
+            // 增加返回值变量
+            Variable variable = new Variable(res);
+            variable.setType("int");
+            middleCode.getTable().getFunctionTable().get(functionName).addVar(variable);
+
             token = tokens.getCurToken();
             if (token != null && ";".equals(token.getType())) {
                 math(tree, tokens);
@@ -857,6 +886,8 @@ public class Syntax {
 
     TempVariable for_arg2 = null;
 
+    TempVariable for_arg3 = null;
+
     private TempVariable ex_E(TempVariable arg) {
         tree.addChild(new TreeNode("<for 语句>"));
         Token token = tokens.getCurToken();
@@ -877,6 +908,7 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少;", tokens.getCurToken()));
             }
+            int to = middleCode.getNXQ();
             for_arg2 = expression();
             token = tokens.getCurToken();
             if (token != null && ";".equals(token.getType())) {
@@ -885,7 +917,9 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少;", tokens.getCurToken()));
             }
-            expression();
+            for_arg3 = expression();
+            int from = middleCode.getNXQ();
+            middleCode.gencode(functionName,"j","","","");
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -895,7 +929,9 @@ public class Syntax {
             }
             middleCode.buckpatch(for_arg2.getTC(),middleCode.getNXQ());
             ex_K(arg);
+            middleCode.gencode(functionName,"j","","",(for_arg2.getFC()+1)+"");
             middleCode.buckpatch(for_arg2.getFC(),middleCode.getNXQ());
+            middleCode.buckpatch(from,to);
         }
         tree.traceBack();
         return arg;
@@ -924,6 +960,7 @@ public class Syntax {
             }
             middleCode.buckpatch(condiation.getTC(),middleCode.getNXQ());
             TempVariable res = ex_K(arg);
+            middleCode.gencode(functionName,"j","","",(condiation.getFC()-1)+"");
             middleCode.buckpatch(condiation.getFC(),middleCode.getNXQ());
         }
         tree.traceBack();
@@ -975,11 +1012,16 @@ public class Syntax {
     private void ex_H1() {
         Token token = tokens.getCurToken();
         if (token != null && ";".equals(token.getType())) {
-            middleCode.gencode("ret","","","");
+            middleCode.gencode(functionName,"ret","","","");
             math(tree, tokens);
         } else if (token != null && ("(".equals(token.getType()) || "!".equals(token.getType()) || "标识符".equals(token.getType()) || judgeConst(token))) {
             TempVariable res = expression();
-            middleCode.gencode("ret",res.getVal(),"","");
+            // 增加临时变量
+            Variable variable = new Variable(res);
+            variable.setType("int");
+            middleCode.getTable().getFunctionTable().get(functionName).addVar(variable);
+
+            middleCode.gencode(functionName,"ret","","",res.getVal());
             token = tokens.getCurToken();
             if (token != null && ";".equals(token.getType())) {
                 math(tree, tokens);
@@ -1029,6 +1071,7 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少}", tokens.getCurToken()));
             }
+//            middleCode.gencode(functionName,"j","","",for_arg2.getTC());
         }
         socp--;
         return arg;
@@ -1091,7 +1134,7 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少(", tokens.getCurToken()));
             }
-            expression();
+            TempVariable condition = expression();
             token = tokens.getCurToken();
             if (token != null && ")".equals(token.getType())) {
                 math(tree, tokens);
@@ -1099,8 +1142,10 @@ public class Syntax {
                 tokens.match();
                 exceptions.add(new ParseException("缺少)", tokens.getCurToken()));
             }
+            middleCode.buckpatch(condition.getTC(),middleCode.getNXQ());
             ex_K(arg);
             ex_O1(arg);
+            middleCode.buckpatch(condition.getFC(),middleCode.getNXQ());
         }
     }
 
@@ -1135,7 +1180,7 @@ public class Syntax {
             math(tree, tokens);
             token = tokens.getCurToken();
             // 函数定义
-            middleCode.gencode(token.getVal().toString(),"","","");
+            middleCode.gencode(functionName,token.getVal().toString(),"","","");
             functionName = token.getVal().toString();
             // 定义函数入口四元式
             middleCode.getTable().getFunctionTable().get(functionName).setPosition(middleCode.getNXQ());
@@ -1188,7 +1233,8 @@ public class Syntax {
                 // 参数名
                 v.setName(token.getVal().toString());
                 // 加入变量表
-                middleCode.getTable().addVar(functionName,v);
+//                middleCode.getTable().addVar(functionName,v);
+                middleCode.getTable().addPara(functionName,v);
                 math(tree, tokens);
             } else {
                 tokens.match();
@@ -1214,7 +1260,7 @@ public class Syntax {
         Token token = tokens.getCurToken();
         if (token != null && ("main".equals(token.getVal().toString()))) {
             // 函数定义
-            middleCode.gencode("main","","","");
+            middleCode.gencode(functionName,"main","","","");
             functionName = "main";
             Function function = new Function();
             function.setFunctionName("main");
@@ -1242,7 +1288,7 @@ public class Syntax {
             exceptions.add(new ParseException("缺少)", tokens.getCurToken()));
         }
         ex_C(arg);
-        middleCode.gencode("sys","","","");
+        middleCode.gencode(functionName,"sys","","","");
         po_A(arg);
         tree.traceBack();
     }

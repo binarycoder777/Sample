@@ -1,12 +1,12 @@
-//一个函数测试
+//定义一个函数的测试，输入一个数，结果加上7
 int a = 1 ;
 
 int sum(int,int);
 
 main(){
 
-    int N = read() ;
-
+    // int N = read() ;
+    int N = 10 ;
     a = sum(sum(3,4),N) ;
     write(a);
 
