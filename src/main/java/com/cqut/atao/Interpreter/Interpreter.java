@@ -214,15 +214,6 @@ public class Interpreter {
                 case "para":
                     paraList.add(arg1Val);
                     break;
-                case "print" :
-                    if (resultType.equals("char"))
-                        resultVal = (char)Integer.parseInt(resultVal) + "";
-                    else if (resultType.equals("string"))
-                        resultVal = resultVal.substring(1, resultVal.length()-1);
-//                   textArea.append(resultVal + "\n");
-                    sb = new StringBuilder(textArea.getText());
-                    textArea.setText(sb.toString());
-                    break;
                 case "scan" :
                     String input = textArea.getText().substring(sb.length());
                     while (input.isEmpty() || !input.contains("\n")) {
