@@ -13,7 +13,7 @@ import java.util.Map;
  * @author atao
  * @version 1.0.0
  * @ClassName chairmanshipCoder.java
- * @Description TODO
+ * @Description 读取种别码
  * @createTime 2022年04月20日 08:54:00
  */
 @Configuration
@@ -33,7 +33,6 @@ public class ChairmanshipCoder {
         Map<String,Integer> map = new HashMap<>();
         BufferedReader reader = null;
         try {
-            System.out.println("以行为单位读取文件内容，一次读一整行：");
             reader = new BufferedReader(new FileReader("target/classes/chairmanship_code.txt"));
             String s = null;
             // 一次读入一行，直到读入null为文件结束
@@ -53,6 +52,34 @@ public class ChairmanshipCoder {
             }
         }
         return map;
+    }
+
+    /**
+     * 读取代码
+     * @return
+     */
+    public static String readFile(String filePath){
+        String text = "";
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String s = "";
+            // 一次读入一行，直到读入null为文件结束
+            while ((s = reader.readLine()) != null) {
+                text += (s+'\n');
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+        return text;
     }
 
 }

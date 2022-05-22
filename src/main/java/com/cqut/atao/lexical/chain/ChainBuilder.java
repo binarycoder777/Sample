@@ -4,7 +4,7 @@ package com.cqut.atao.lexical.chain;
  * @author atao
  * @version 1.0.0
  * @ClassName ChainBuilder.java
- * @Description TODO
+ * @Description 构造器
  * @createTime 2022年04月19日 20:06:00
  */
 public class ChainBuilder {

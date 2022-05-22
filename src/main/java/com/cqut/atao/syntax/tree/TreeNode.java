@@ -13,13 +13,15 @@ import java.util.Map;
  * @author atao
  * @version 1.0.0
  * @ClassName TreeNode.java
- * @Description TODO
+ * @Description 树节点
  * @createTime 2022年05月02日 16:53:00
  */
 @Data
 public class TreeNode implements Serializable {
 
     private String val;
+
+    private Boolean isTerminator;
 
     private TreeNode parent;
 
@@ -30,4 +32,9 @@ public class TreeNode implements Serializable {
         this.child = new ArrayList<>();
     }
 
+    public TreeNode(String val, Boolean isTerminator) {
+        this.val = val;
+        this.isTerminator = isTerminator;
+        this.child = new ArrayList<>();
+    }
 }

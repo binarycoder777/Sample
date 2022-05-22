@@ -1,0 +1,699 @@
+/**
+ * JJTree template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */options{  static = false;}PARSER_BEGIN(MiniC)package miniC;
+import util.*;
+
+public class MiniC{
+  QTList qtList = new QTList();
+  VariableNameGenerator variableNameGenerator = new VariableNameGenerator();
+    public static void main(String args [])  {    System.out.println("Reading from standard input...");    System.out.print("Enter an expression like \"1+(2+3)*var;\" :");    MiniC parser = new MiniC(System.in);    try    {      SimpleNode n = parser.Start();      n.dump("");      System.out.println("Thank you.");    }    catch (Exception e)    {      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }}PARSER_END(MiniC)SKIP :{  " "| "\t"| "\n"| "\r"| < "//" (~[ "\n", "\r" ])*    (      "\n"    | "\r"    | "\r\n"    ) >| < "/*" (~[ "*" ])* "*"    (      ~[ "/" ] (~[ "*" ])* "*"    )*    "/" >}TOKEN : /* LITERALS */
+{
+  < INTEGER_LITERAL :
+    < DECIMAL_LITERAL > ([ "l", "L" ])?
+  | < HEX_LITERAL > ([ "l", "L" ])?
+  | < OCTAL_LITERAL > ([ "l", "L" ])? 
+  >
+| < FLOAT_LITERAL :
+    [ "1"-"9" ] ([ "0"-"9" ])*
+    (
+      "." ([ "0"-"9" ])*
+    )? >
+| < #DECIMAL_LITERAL : [ "1"-"9" ] ([ "0"-"9" ])* >
+| < #HEX_LITERAL : "0" [ "x", "X" ] ([ "0"-"9", "a"-"f", "A"-"F" ])+ >
+| < #OCTAL_LITERAL : "0" ([ "0"-"7" ])* >
+}
+
+TOKEN :
+{
+  < INT : "int" >
+| < WHILE : "while" >
+| < VOID : "void" >
+| < FLOAT : "float" >
+| < BOOL : "bool" >
+| < DOUBLE : "double" >
+| < FOR : "for" >
+| < IF : "if" >
+| < ELSE : "else" >
+| < RETURN : "return" >
+| < MAIN : "main" >
+| < CHAR : "char" >
+| < TRUE : "true" >
+| < FALSE : "false" >
+| < DO : "do" >
+| < SWITCH :"switch">
+| < CASE:"case">
+| < DEFAULTT : "default" >
+| < BREAK : "break" >
+}
+
+TOKEN : /*charSet*/
+{
+  < LB : "(" >
+| < RB : ")" >
+| < LS : "{" >
+| < RS : "}" >
+}
+
+TOKEN : /*Operator*/
+{
+  < ADD : "+" >
+| < SUB : "-" >
+| < MULT : "*" >
+| < DIV : "/" >
+| < MOD : "%" >
+| < EQ : "=" >
+}
+
+TOKEN : /*logicOperator*/
+{
+  < AND : "&&" >
+| < OR : "||" >
+| < UN : "!" >
+}
+
+TOKEN : /*RelationChar*/
+{
+  < LESS : "<" >
+| < LESSN : "<=" >
+| < GREAT : ">" >
+| < GREATN : ">=" >
+| < EQU : "==" >
+| < NOTEQU : "!=" >
+}
+
+TOKEN :
+{
+  < COMMA : "," >
+| < SEMIC : ";" >
+| < COLON:":" >
+}TOKEN : /* IDENTIFIERS */{  < IDENTIFIER :    < LETTER >    (      < LETTER >    | < DIGIT >    )* >| < #LETTER : [ "_", "a"-"z", "A"-"Z" ] >| < #DIGIT : [ "0"-"9" ] >}SimpleNode Start() :
+{}
+{
+  program()
+  {
+    return jjtThis;
+  }
+}
+
+void program()://³ÌÐò
+{}
+{
+  < INT ><MAIN >< LB >< RB >< LS >
+  (
+    StatementBlocks()
+  )*
+  < RETURN > Integer() < SEMIC >
+  < RS >
+}
+void Statement() ://Óï¾ä
+{}
+{
+  SeqStatement()
+| CondStatement()
+| LoopStatement()
+}
+void StatementBlocks() : //Óï¾ä¿é
+{}
+{
+ Statement()
+|
+    < LS >
+    (
+      StatementBlocks()
+    )*
+    < RS >
+}
+
+
+void SeqStatement() : //Ë³ÐòÓï¾ä
+{}
+{
+  (
+  (
+    DeclarStatement()
+  | AssignStatement()
+  )
+  < SEMIC >
+)
+| SwitchCase()
+}
+
+void DeclarStatement() : //ÉùÃ÷Óï¾ä
+{}
+{
+  DeclarKey() 
+  Identifier()
+  (
+    < COMMA >
+    Identifier()
+  )*
+}
+
+void AssignStatement() : //¸³ÖµÓï¾ä
+{
+  Token op;
+  Token first;
+  String exp;
+}
+{
+    first = Identifier()
+    op = < EQ >
+    exp = Expression()
+    {
+      QTInfo qt = new QTInfo(op.image, exp, "_", first.image);
+      qtList.addQTInfo(qt);
+    }
+}
+
+void CondStatement() : //Ìõ¼þÓï¾ä
+{
+  ConditionValue chain = new ConditionValue();
+  ConditionValue temp = new ConditionValue();
+  int i;
+}
+{
+  < IF > < LB >
+  chain = Logic()
+  < RB >
+  {	
+    i = QTInfo.size + 1;
+    chain.backpatchTrueChain(i);
+  }
+  StatementBlocks()
+  {
+    QTInfo qt = new QTInfo("J", "_", "_", "N");
+    temp.mergeTrue(qt);
+    qtList.addQTInfo(qt);
+    i = QTInfo.size + 1;
+    chain.backpatchFalseChain(i);
+  }
+  (
+    LOOKAHEAD(1)
+    < ELSE >
+    StatementBlocks()
+    {
+      i = QTInfo.size + 1;
+      temp.backpatchTrueChain(i);
+    }
+  )?}
+
+ConditionValue Logic() : //Âß¼­»ò
+{
+  int seq = 0;
+  int tag = 0;
+  ConditionValue chain = new ConditionValue();
+  ConditionValue resChain = new ConditionValue();
+  ConditionValue chain2 = new ConditionValue();
+}
+{
+  chain = LogicAnd()
+  (
+    < OR >{
+      tag = 1;
+      seq = QTInfo.size + 1;
+      chain.backpatchFalseChain(seq);
+    }
+    chain2 = LogicAnd(){
+      resChain = new ConditionValue();
+      resChain.mergeFalse(chain2);
+      chain2.mergeTrue(chain);
+      resChain.mergeTrue(chain2);
+      chain = resChain;
+    }
+  )*
+  {
+    if (tag == 0) 
+    	return chain;
+    else 
+    	return resChain;
+  }
+}
+
+ConditionValue LogicAnd() : //Âß¼­Óë
+{
+  int seq = 0;
+  int tag = 0;
+  ConditionValue chain = new ConditionValue();
+  ConditionValue resChain = new ConditionValue();
+  ConditionValue chain2 = new ConditionValue();
+}
+{
+  chain = LogicNot()
+  (
+    < AND >{
+      tag = 1;
+      seq = QTInfo.size + 1;
+      chain.backpatchTrueChain(seq);
+    }
+    chain2 = LogicNot(){
+      resChain = new ConditionValue();
+      resChain.mergeTrue(chain2);
+      chain2.mergeFalse(chain);
+      resChain.mergeFalse(chain2);
+      chain = resChain; 
+    }
+  )*
+  {
+    if (tag == 0) 
+    	return chain;
+    else 
+    	return resChain;
+  }
+}
+
+ConditionValue LogicNot() : //Âß¼­·Ç
+{
+  ConditionValue chain = new ConditionValue();
+  ConditionValue chain1 = new ConditionValue();
+}
+{
+  (
+    chain = Condition()
+  |
+    (
+      < UN >
+      chain1 = Condition()
+      {
+        chain.FalseMergeTrue(chain1);
+        chain.TrueMergeFalse(chain1);
+      }
+    )
+  )+
+  {
+      return chain;
+  }
+}
+
+
+ConditionValue Condition() : //Ìõ¼þ
+{
+  int tag = 0;
+  String first;
+  String middle;
+  String rop;
+  ConditionValue chain = new ConditionValue();}
+{
+  first = Expression()
+  (
+    rop = RelationChar() 
+    middle = Expression(){
+      QTInfo qt1 = new QTInfo("J" + rop, first, middle, "N");
+      QTInfo qt2 = new QTInfo("J", "_", "_", "N");
+      chain.mergeTrue(qt1);
+      chain.mergeFalse(qt2);
+      qtList.addQTInfo(qt1);
+      qtList.addQTInfo(qt2);
+      tag = 1;})?
+  {
+      if(tag == 0){
+          QTInfo qt1 = new QTInfo("JNZ", first, "_", "N");
+	      QTInfo qt2 = new QTInfo("J", "_", "_", "N");
+	      chain.mergeTrue(qt1);
+	      chain.mergeFalse(qt2);
+	      qtList.addQTInfo(qt1);
+	      qtList.addQTInfo(qt2);
+      }
+      return chain;
+  }
+}
+
+void LoopStatement() : //Ñ­»·Óï¾ä
+{}
+{
+  (
+    While()
+  | Do_While()
+  | For_Loop()
+  )
+}
+
+void While() : //Ñ­»·Óï¾ä
+{
+  int seq = 0, tag;
+  ConditionValue chain;
+  ConditionValue temp = new ConditionValue();
+}
+{
+  < WHILE >
+  < LB >
+  {
+    tag = qtList.QTList.size() + 1;
+  }
+  chain = Logic() 
+  < RB >
+  < LS >
+  {
+    seq = QTInfo.size + 1;
+    chain.backpatchTrueChain(seq);
+  }
+  (
+    StatementBlocks()
+  )*
+  < RS >
+  {
+    QTInfo qt = new QTInfo("J", "_", "_", Integer.toString(tag));
+    qtList.addQTInfo(qt);
+    seq = QTInfo.size + 1;
+    chain.backpatchFalseChain(seq);
+  }
+}
+
+void Do_While() :
+{
+  int tag,now;
+  ConditionValue chain;
+}
+{
+  < DO >
+  < LS >
+  {
+    tag = qtList.QTList.size() + 1;
+  }
+  (
+    StatementBlocks()
+  )*
+  < RS >
+  < WHILE >
+  < LB >
+  chain = Logic()
+  {
+    now = QTInfo.size + 1;
+    chain.backpatchTrueChain(tag);
+    chain.backpatchFalseChain(now);
+  }
+  < RB >
+  < SEMIC >
+}
+
+void For_Loop() :
+{
+  int id1=-1,id2=-1,id3=-1,now=-1,add=-1,flag1=0,flag2=0;
+  ConditionValue chain = new ConditionValue();
+}
+{
+  < FOR >
+  < LB >
+  (    AssignStatement()
+  )?
+  < SEMIC >
+  (
+    {
+      id1 = qtList.QTList.size() + 1;
+    }
+    {
+      flag1 = 1;
+    }    chain = Logic()
+  )?
+  {
+      if(flag1==0)
+      {
+        add = qtList.QTList.size();
+        QTInfo qt = new QTInfo("J", "_", "_", "N");
+		qtList.addQTInfo(qt);
+      }
+  }
+  < SEMIC >
+  {
+    id2 = qtList.QTList.size() + 1;
+  }
+  (
+    {
+      flag2 = 1;
+    }    AssignStatement()
+    {
+        if(flag1==1)
+	    {
+	        QTInfo qt = new QTInfo("J", "_", "_", Integer.toString(id1));
+		    qtList.addQTInfo(qt);
+	    }
+    }
+  )?
+  {
+    if(flag1==1)
+    {
+        now = QTInfo.size + 1;
+	    chain.backpatchTrueChain(now);
+    }
+    id3 = qtList.QTList.size() + 1;
+  }
+  < RB >
+  {
+    now = QTInfo.size + 1;
+    if(flag1==0&&flag2==1)
+    {
+        QTInfo temp = qtList.get(add);
+        temp.setResult(now);
+        qtList.set(add,temp);
+    }
+  }
+  StatementBlocks()
+  {
+    if(flag2==1)
+    {
+        QTInfo qt = new QTInfo("J", "_", "_", Integer.toString(id2));
+	    qtList.addQTInfo(qt);
+	    now = QTInfo.size + 1;
+	    chain.backpatchFalseChain(now);
+    }
+    else if(flag1==1)
+    {
+        QTInfo qt = new QTInfo("J", "_", "_", Integer.toString(id1));
+	    qtList.addQTInfo(qt);
+	    now = QTInfo.size + 1;
+	    chain.backpatchFalseChain(now);
+    }
+    else
+    {
+        QTInfo qt = new QTInfo("J", "_", "_", Integer.toString(id3));
+	    qtList.addQTInfo(qt);
+	    now = QTInfo.size + 1;
+	    chain.backpatchFalseChain(now);
+    }
+  }
+}
+
+void SwitchCase()://switch-case
+{
+  Token t,t1;
+  ConditionValue chain = new ConditionValue();
+  int flag=0,tag=0,now=0;
+}
+{
+  < SWITCH >
+  < LB >
+  t = Identifier()
+  < RB >
+  < LS >
+  (
+    < CASE >
+    t1 = < INTEGER_LITERAL >
+    {
+      now = QTInfo.size + 3;
+      QTInfo qt1 = new QTInfo("J==", t.image, t1.image, now);
+      QTInfo qt2 = new QTInfo("J", "_", "_", "N");
+      //chain.mergeTrue(qt1);
+      chain.mergeFalse(qt2);
+      qtList.addQTInfo(qt1);
+      qtList.addQTInfo(qt2);
+    }
+    < COLON >
+    {
+        now = QTInfo.size + 1;
+	    chain.backpatchTrueChain(now);
+    }
+    StatementBlocks()
+  )*
+  (
+    < DEFAULTT > 
+    < COLON >
+    {
+      flag = 1;
+      tag = qtList.QTList.size() + 1;
+    }
+    StatementBlocks()
+  )?
+  {
+    if(flag==0)
+    	tag = qtList.QTList.size() + 1;
+    chain.backpatchFalseChain(tag);
+  }
+  < RS >
+}
+
+String Expression() :
+{
+  String exp;
+}
+{
+  exp = AdditiveExpression()
+  {
+    return exp;
+  }
+}
+
+String AdditiveExpression() :
+{
+  String first;
+  String middle;
+  String newTemp;
+  Token op;
+}
+{
+  first = MultiplicativeExpression()
+  {
+    newTemp = first;
+  }
+  (
+    (
+      op = "+"
+    | op = "-"
+    )
+    middle = MultiplicativeExpression()
+    {
+      newTemp = variableNameGenerator.genVariableName();
+      QTInfo qt = new QTInfo(op.image, first, middle, newTemp);
+      qtList.addQTInfo(qt);
+      first = newTemp;
+    }
+  )*
+  {
+    return newTemp;
+  }
+}
+
+String MultiplicativeExpression() :
+{
+  String first;
+  String middle;
+  String newTemp;
+  Token op;
+}
+{
+  first = UnaryExpression()
+  {
+    newTemp = first;
+  }
+  (
+    (
+      op = "*"
+    | op = "/"
+    | op = "%"
+    )
+    middle = UnaryExpression()
+    {
+      newTemp = variableNameGenerator.genVariableName();
+      QTInfo qt = new QTInfo(op.image, first, middle, newTemp);
+      qtList.addQTInfo(qt);
+      first = newTemp;
+    }
+  )*
+  {
+    return newTemp;
+  }
+}
+
+String UnaryExpression() :
+{
+  String exp;
+  Token t;
+}
+{
+  (    
+  "("
+  exp = Expression()
+  ")"
+| t = Identifier()
+  {
+      exp = t.image;
+  }
+| t = Integer()
+  {
+      exp = t.image;
+  }
+)
+  {
+    return exp;
+  }
+}
+
+Token Identifier() :
+{
+  Token t;
+}
+{
+  t = < IDENTIFIER >
+  {
+    return t;
+  }
+}
+
+Token Integer() :
+{
+  Token t;
+}
+{
+  t = < INTEGER_LITERAL >
+  {
+    return t;
+  }
+}
+
+Token Float() :
+{
+  Token t;
+}
+{
+  t = < FLOAT_LITERAL >
+  {
+    return t;
+  }
+}
+
+Token StartKey() :
+{
+  Token t;
+}
+{
+  (
+    t = < VOID >
+  | t = < INT >
+  )
+  {
+    return t;
+  }
+}
+
+Token DeclarKey() :
+{
+  Token t;
+}
+{
+  (
+    t = < INT >
+  | t = < FLOAT >
+  | t = < CHAR >
+  | t = < DOUBLE >
+  | t = < BOOL >
+  )
+  {
+    return t;
+  }
+}
+
+String RelationChar() : //¹ØÏµ·û
+{
+  Token t;
+}
+{
+  (
+    t = < LESS >
+  | t = < LESSN >
+  | t = < GREAT >
+  | t = < GREATN >
+  | t = < EQU >
+  | t = < NOTEQU >
+  )
+  {
+    return t.image;
+  }
+}

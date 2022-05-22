@@ -22,8 +22,12 @@ public class Text {
     public static Queue<Line> parse(String text){
         int count = 1;
         Queue<Line> res = new LinkedList<>();
-        String[] lines = text.split("\n");
+        String[] lines = text.trim().split("\n");
         for (String l: lines){
+            l = l.trim();
+            if (l.equals("")){
+                continue;
+            }
             Line line = new Line(l,count++);
             res.add(line);
         }

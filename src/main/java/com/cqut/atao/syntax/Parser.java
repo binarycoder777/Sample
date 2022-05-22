@@ -1,6 +1,10 @@
 package com.cqut.atao.syntax;
 
+import com.cqut.atao.syntax.strategy.statement.Syntax;
+import com.cqut.atao.syntax.tree.MyTree;
 import com.cqut.atao.token.Token;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -8,44 +12,28 @@ import java.util.List;
  * @author atao
  * @version 1.0.0
  * @ClassName Parser.java
- * @Description TODO
+ * @Description 语法分析
  * @createTime 2022年05月01日 13:49:00
  */
+@Data
+@NoArgsConstructor
 public class Parser {
 
-    private TokenList<Token> tokens;
+    private Syntax syntax = new Syntax();
 
-    private List<Exception> exceptions;
-
-    public void syataxAnalysis(){
-        Token token = tokens.getNextToken();
-        while (token != null && !"main".equals(token.getVal())){
-            if ("const".equals(token.getVal())){
-                //
-            }else if (judgeType(token)){
-                //
-            }else {
-                // error
-            }
+    public void syataxAnalysis(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions){
+        setPar(tree,tokens,exceptions);
+        Token token = tokens.getCurToken();
+        while (token != null && !"main".equals(token.getVal().toString())){
+            syntax.DE();
+            token = tokens.getCurToken();
         }
-        token = tokens.getNextToken();
-        if (!"(".equals(token.getVal())) {
-            // error
-        }
-        if (!"(".equals(token.getVal())) {
-            // error
-        }
-        // 处理复合语句
-        token = tokens.getNextToken();
-        while (token != null && judgeType(token)) {
-            // 处理函数定义
-            token = tokens.getNextToken();
-        }
+        syntax.Program();
     }
 
-    // 判断token是否是int、char、float类型
-    public boolean judgeType(Token token){
-        return "int".equals(token.getVal()) || "char".equals(token.getVal()) || "float".equals(token.getVal()) || "void".equals(token.getVal());
+    public void setPar(MyTree tree, TokenList<Token> tokens, List<Exception> exceptions){
+        syntax.setTree(tree);
+        syntax.setTokens(tokens);
+        syntax.setExceptions(exceptions);
     }
-
 }
