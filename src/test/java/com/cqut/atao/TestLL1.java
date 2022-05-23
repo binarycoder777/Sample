@@ -1,6 +1,6 @@
 package com.cqut.atao;
 
-import com.cqut.atao.rebuild.LL1;
+import com.cqut.atao.LL1.LL1;
 import org.junit.Test;
 
 /**

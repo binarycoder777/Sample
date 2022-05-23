@@ -3,9 +3,11 @@ package com.cqut.atao.controller;
 import com.cqut.atao.Interpreter.Interpreter;
 import com.cqut.atao.lexical.Lexer;
 import com.cqut.atao.middle.MiddleCode;
+import com.cqut.atao.LL1.LL1;
 import com.cqut.atao.syntax.Parser;
 import com.cqut.atao.syntax.TokenList;
 import com.cqut.atao.syntax.tree.MyTree;
+import com.cqut.atao.toMFA.NTM;
 import com.cqut.atao.token.Token;
 import com.cqut.atao.util.TokenUtil;
 import javafx.event.ActionEvent;
@@ -36,21 +38,37 @@ public class Controller {
     @FXML
     private TextArea treeArea;
 
+    // 词法分析
     private Lexer lexer = new Lexer();
 
+    // 语法分析
     private Parser parser = new Parser();
 
+    // tokens
     private List<Token> tokens;
 
+    // 中间代码
     private MiddleCode middleCode;
 
+    // 解释器
     private Interpreter interpreter;
+
+    // LL1预测分析法
+    private LL1 ll1 = new LL1();
+
+    // LL(1)文法路径
+    private String llFilePath;
+
+    // 正规集->MFA
+    private NTM ntm = new NTM();
 
     @FXML
     public void open(ActionEvent actionEvent) throws IOException {
         Stage stage = (Stage) rootLayout.getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(stage);
+        // 记录LL1文法路径
+        llFilePath = selectedFile.getPath();
         BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
         String text = "";
         String line = null;
@@ -106,6 +124,66 @@ public class Controller {
     public void interpreter(ActionEvent actionEvent) throws IOException {
         this.interpreter = new Interpreter(treeArea);
         interpreter.interpreter(middleCode.getTable().getFunctionTable(),middleCode.getFourTable());
+    }
+
+    // First集
+    @FXML
+    public void first(ActionEvent actionEvent) throws IOException {
+        ll1.readLAN(llFilePath);
+        String first = ll1.getFirst();
+        tokenArea.setText(first);
+    }
+
+    // Follow集
+    @FXML
+    public void follow(ActionEvent actionEvent) throws IOException {
+        String follow = ll1.getFollow();
+        tokenArea.setText(follow);
+    }
+
+    // 终结符
+    @FXML
+    public void vt(ActionEvent actionEvent) throws IOException {
+        String vt = ll1.getVT();
+        tokenArea.setText(vt);
+    }
+
+    // 分析表
+    @FXML
+    public void llTable(ActionEvent actionEvent) throws IOException {
+        String table = ll1.generateTable();
+        treeArea.setText(table);
+        tokenArea.setText("");
+    }
+
+    // 过程分析
+    @FXML
+    public void process(ActionEvent actionEvent) throws IOException {
+        String input = tokenArea.getText();
+        System.out.println(input);
+        String res = ll1.analyze(input);
+        treeArea.setText(res);
+    }
+
+
+    // 正规集 -> NFA
+    @FXML
+    public void NFA(ActionEvent actionEvent) throws IOException {
+        String text = coderArea.getText();
+        String res = ntm.getNFA(text);
+        treeArea.setText(res);
+    }
+
+    // NFA -> DFA
+    @FXML
+    public void DFA(ActionEvent actionEvent) throws IOException {
+        treeArea.setText(ntm.getDFA());
+    }
+
+    // DFA -> MFA
+    @FXML
+    public void MFA(ActionEvent actionEvent) throws IOException {
+        treeArea.setText(ntm.getMFA());
     }
 
 

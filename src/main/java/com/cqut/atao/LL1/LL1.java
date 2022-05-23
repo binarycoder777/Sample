@@ -1,6 +1,4 @@
-package com.cqut.atao.rebuild;
-
-import com.cqut.atao.token.Char;
+package com.cqut.atao.LL1;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -42,7 +40,7 @@ public class LL1 {
     private Character startV;
 
     // 读取LL1文法
-    public void readLAN(String filePath){
+    public String readLAN(String filePath){
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(filePath));
@@ -53,6 +51,7 @@ public class LL1 {
                 // 获取开始符号
                 if (i == 0){
                     startV = s.charAt(0);
+                    i = 1;
                 }
                 String key = s.charAt(0)+"";
                 String[] val = s.substring(3).split("\\|");
@@ -69,12 +68,17 @@ public class LL1 {
                 }
             }
         }
+        String res = "";
+        for (Map.Entry entry:LAN.entrySet()){
+            res += (entry.getKey()+"\t"+entry.getValue());
+        }
+        return res;
     }
 
 
 
     // 求First集
-    public void getFirst(){
+    public String getFirst(){
         Map<String,Object> length = new HashMap<>();
         for (String key: LAN.keySet()){
             First.put(key,new ArrayList<>());
@@ -145,11 +149,15 @@ public class LL1 {
                 flag = false;
             }
         }
-        System.out.println("文法:"+LAN);
         System.out.println("First集:"+First);
+        String res = "";
+        for (Map.Entry entry: First.entrySet()){
+            res += entry.getKey().toString() + entry.getValue().toString() + "\n";
+        }
+        return res;
     }
 
-    public void getFollow(){
+    public String getFollow(){
         for (String k: LAN.keySet()){
             Follow.put(k,new ArrayList<>());
             List<String> lanTemp = new ArrayList<>(LAN.keySet());
@@ -211,9 +219,14 @@ public class LL1 {
             Follow.get(k).addAll(set);
         }
         System.out.println("Follow:"+Follow);
+        String res = "";
+        for (Map.Entry entry: Follow.entrySet()){
+            res += entry.getKey().toString() + entry.getValue().toString() + "\n";
+        }
+        return res;
     }
 
-    public void getVT(){
+    public String getVT(){
         VT.add("#");
         for (List list: LAN.values()){
             for (int i=0;i<list.size();++i){
@@ -226,9 +239,14 @@ public class LL1 {
             }
         }
         System.out.println("终结符:"+VT);
+        String res = "";
+        for (String s: VT){
+            res += s + "\n";
+        }
+        return res;
     }
 
-    public void generateTable(){
+    public String generateTable(){
         getVT();
         for (String k: LAN.keySet()){
             table.put(k,new HashMap<>());
@@ -269,9 +287,14 @@ public class LL1 {
             }
         }
         System.out.println("分析表:"+table);
+        String res = "";
+        for (Map.Entry entry: table.entrySet()){
+            res += entry.getKey().toString() + "\t" + entry.getValue().toString() + "\n";
+        }
+        return res;
     }
 
-    public void analyze(String input){
+    public String analyze(String input){
         String inputS = input+"#";
         Stack<Character> inputStr = new Stack<>();
         for (int i=inputS.length()-1;i>=0;--i){
@@ -374,6 +397,7 @@ public class LL1 {
         if (errorFlag == 1){
             System.out.println("分析失败");
         }else {
+            String res = "步骤\\t符号栈\\t输入串\\t所用产生式\n";
             System.out.println("分析成功");
             System.out.println("步骤\\t符号栈\\t输入串\\t所用产生式");
             int size = 0;
@@ -382,10 +406,13 @@ public class LL1 {
             }
             for (int i=0;i<size;++i){
                 if (process.containsKey(i)){
+                    res += (i+"\t\t"+process.get(i).get(0)+"\t\t"+process.get(i).get(1)+"\t\t"+process.get(i).get(2)+"\n");
                     System.out.println(i+"\t\t"+process.get(i).get(0)+"\t\t"+process.get(i).get(1)+"\t\t"+process.get(i).get(2));
                 }
             }
+            return res;
         }
+        return "分析有错";
     }
 
 }

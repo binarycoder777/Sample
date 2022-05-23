@@ -41,6 +41,22 @@
                                 <MenuItem mnemonicParsing="false" text="Interpreter"  onAction="#interpreter"/>
                             </items>
                         </Menu>
+                        <Menu mnemonicParsing="false" text="LL(1)">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="First" onAction="#first"/>
+                                <MenuItem mnemonicParsing="false" text="Follow" onAction="#follow"/>
+                                <MenuItem mnemonicParsing="false" text="VT" onAction="#vt"/>
+                                <MenuItem mnemonicParsing="false" text="Table" onAction="#llTable"/>
+                                <MenuItem mnemonicParsing="false" text="Process" onAction="#process"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="NTM">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="NFA" onAction="#NFA"/>
+                                <MenuItem mnemonicParsing="false" text="DFA" onAction="#DFA"/>
+                                <MenuItem mnemonicParsing="false" text="MFA" onAction="#MFA"/>
+                            </items>
+                        </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="About" />
