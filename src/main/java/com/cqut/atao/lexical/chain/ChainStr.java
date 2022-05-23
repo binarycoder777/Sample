@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
  * @author atao
  * @version 1.0.0
  * @ClassName ChainStr.java
- * @Description TODO
+ * @Description 字符串过滤
  * @createTime 2022年04月19日 20:02:00
  */
 @NoArgsConstructor

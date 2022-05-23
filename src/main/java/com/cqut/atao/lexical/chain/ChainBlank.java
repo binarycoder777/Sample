@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
  * @author atao
  * @version 1.0.0
  * @ClassName ChainBlank.java
- * @Description TODO
+ * @Description 空格过滤
  * @createTime 2022年04月19日 11:55:00
  */
 @NoArgsConstructor

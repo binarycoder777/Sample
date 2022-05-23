@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
  * @author atao
  * @version 1.0.0
  * @ClassName ChainIdentifier.java
- * @Description TODO
+ * @Description 标识符过滤
  * @createTime 2022年04月19日 16:24:00
  */
 @NoArgsConstructor
