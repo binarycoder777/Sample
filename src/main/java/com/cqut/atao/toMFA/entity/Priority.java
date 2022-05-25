@@ -5,11 +5,13 @@ package com.cqut.atao.toMFA.entity;
  * @author atao
  * @version 1.0.0
  * @ClassName Priority.java
- * @Description 优先级实体
- * @createTime 2022年05月23日 08:54:00
+ * @Description 运算符优先级实体
+ * @createTime 2022年05月22日 08:54:00
  */
 public class Priority {
+	// 运算符
 	private String o1;
+	// 运算符
 	private String o2;
 	// 1 代表o1>o2
 	private int flag;

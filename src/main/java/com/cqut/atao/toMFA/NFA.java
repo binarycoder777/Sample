@@ -13,7 +13,7 @@ import java.util.Stack;
  * @version 1.0.0
  * @ClassName NFA.java
  * @Description 无穷状态机(正规集->NFA)
- * @createTime 2022年05月23日 08:54:00
+ * @createTime 2022年05月22日 08:54:00
  */
 public class NFA {
 
@@ -25,17 +25,22 @@ public class NFA {
     private static final int EQ = 2;
     // 错误
     private static final int ER = 3;
-
+    // 空
     public static final String E = "ε";
-
+    // 操作符号
     private static List<String> operator = new ArrayList<String>();
+    // 优先队列
     private static List<Priority> priorities = new ArrayList<Priority>();
+    // 栈
     private static Stack<String> stack = new Stack<String>();
-    public static ArrayList<String> empty = new ArrayList<String>();// 空白符号
-
+    // 空白符号
+    public static ArrayList<String> empty = new ArrayList<String>();
+    // 起始下标
     private static int FROM = 0;
+    // 终止下标
     private static int TO = 0;
 
+    // 定义正规式符号以及其优先级
     static {
         operator.add(".");
         operator.add("|");
@@ -72,76 +77,77 @@ public class NFA {
         priorities.add(new Priority(E, "(", LT));
         priorities.add(new Priority(E, ")", ER));
         priorities.add(new Priority(E, E, EQ));
-
     }
 
+    // 正规式->NFA
     public static List<FA> parse(String nfa) {
         List<FA> result = new ArrayList<FA>();
-
+        // 空入栈
         stack.push(E);
+        // 记录
         String ch = "";
         // 计数
         int count = 0;
-
+        // 遍历
         for (int i = 0; i < nfa.length(); i++) {
-
+            // 当前字符
             ch = nfa.charAt(i) + "";
+            // 为空则跳过
             if (isEmpty(ch)) {
                 continue;
             }
+            // 判断是否是规定的正规集符号
             if (operator.contains(ch)) {
-                // 低
+                // 获取符号优先级
                 int priority = judgePriority(ch);
+                // 栈顶的符号的优先级比当前低则运算符入栈，等待后面计算
                 if (priority == LT) {
-                    // 运算符入栈
                     stack.push(ch);
-                } else if (priority == GT) {
-                    String op = stack.isEmpty() ? "" : stack.pop();
+                } else if (priority == GT) { // 反之则可以进行转换
+                    String op = stack.isEmpty() ? "" : stack.pop(); // 获取当前符号
                     while (judgePriority(op) != GT) {
+                        // 符号为字母，则加入结果集
                         if (isLetter(op)) {
                             result.add(new FA(count++, op, count++));
                         } else if ("|".equals(op)) {
+                            // 获取栈顶两个符号的to
                             int to1 = result.get(result.size() - 1).getForm();
                             int to2 = result.get(result.size() - 2).getForm();
-
+                            // 获取栈顶两个符号的from
                             int from1 = result.get(result.size() - 1).getTo();
                             int from2 = result.get(result.size() - 2).getTo();
-
+                            // 进行组合运算
+                            // 加入结果集
                             result.add(new FA(count, E, to1));
                             result.add(new FA(count++, E, to2));
-
+                            // 加入结果集
                             result.add(new FA(from1, E, count));
                             result.add(new FA(from2, E, count++));
-
+                            // 更新from和to
                             FROM = result.get(result.size() - 3).getForm();
                             TO = result.get(result.size() - 2).getTo();
-
-                        } else if ("(".equals(op) && ")".equals(ch)) {
                         }
+                        // 弹栈
                         op = stack.pop();
                     }
-
                 } else if (priority == EQ) {
-
+                    // 无需处理
+                    pass();
                 } else if (priority == ER) {
                     // 错误
                     JOptionPane.showMessageDialog(null, "算符顺序有误", "提示", JOptionPane.ERROR_MESSAGE);
-
                 }
 
-            } else if ("*".equals(ch)) {
-                int from = FROM;// result.get(result.size() - 1).getForm();
-                int to = TO;// result.get(result.size() - 2).getTo();
-
+            } else if ("*".equals(ch)) { // 匹配任意符号
+                int from = FROM;
+                int to = TO;
+                // 将空加入结果集(双向)
                 result.add(new FA(count++, E, from));
                 result.add(new FA(to, E, count++));
-
                 int fromw = result.get(result.size() - 1).getForm();
                 int tow = result.get(result.size() - 2).getTo();
                 result.add(new FA(fromw, E, tow));
-
                 result.add(new FA(tow + 2, E, fromw + 2));
-
             } else { // 字母
                 // from E to
                 if (i != 0 && (isLetter(nfa.charAt(i-1) + "") || "*".equals(nfa.charAt(i-1) + ""))) {
@@ -157,20 +163,19 @@ public class NFA {
 
     // 判断优先级
     public static int judgePriority(String op2) {
-
+        // 为空则是目前最高优先级
         if (stack.isEmpty()) {
             return GT;
         }
-
+        // 获取栈顶运算符
         String op1 = stack.peek();
+        // 比较优先级
         for (Priority priority : priorities) {
+            // 根据规则计算优先级
             if (priority.getO1().equals(op1) && priority.getO2().equals(op2)) {
-                // System.out.println(op1 + ":" + op2 + ":" +
-                // priority.getFlag());
                 return priority.getFlag();
             }
         }
-
         return LT;
     }
 
@@ -194,21 +199,21 @@ public class NFA {
         return nfas.get(nfas.size() - 1).getTo();
     }
 
-    public static void main(String[] args) {
-        List<FA> list = parse("(a|b)*b");
-        for (FA nfa : list) {
-            System.out.println(nfa);
-        }
-    }
     //判断是否是字母
     public static boolean isLetter(String str) {
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("[a-zA-Z]+");
         java.util.regex.Matcher m = pattern.matcher(str);
         return m.matches();
     }
+
     // 判断是否是空白符号
     public static boolean isEmpty(String word) {
         return empty.contains(word);
+    }
+
+    // 空
+    public static void pass(){
+        return;
     }
 
 

@@ -3,17 +3,11 @@
 //输入值n<=8
 int factor(int);
 main()
-
 {
-
    int n;
-
    n=10;
-
    write(factor(n));
-
 }
-
 int factor(int m) {
   int fa;
   if(m < 2) {

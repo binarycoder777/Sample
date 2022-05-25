@@ -12,83 +12,92 @@ import java.util.Set;
  * @version 1.0.0
  * @ClassName DFA.java
  * @Description 有穷状态机(NFA->DFA)
- * @createTime 2022年05月23日 08:59:00
+ * @createTime 2022年05月22日 08:59:00
  */
 public class DFA {
 
-
+    // 符号
     public static List<String> letter = new ArrayList<String>();
+    // 临时存储dfa
     private static List<List<Integer>> tempdfas;
+
     private static List<List<Integer>> tempI;
+    // 行
     private static List<List<List<Integer>>> rows = new ArrayList<List<List<Integer>>>();
-    public static ArrayList<String> empty = new ArrayList<String>();// 空白符号
+    // 空白符号
+    public static ArrayList<String> empty = new ArrayList<String>();
+    // 空
     public static final String E = "ε";
+    // 结束
     private static List<Integer> ends;
 
     /** NFA->DFA */
     public static List<FA> parse(List<FA> nfas) {
-
+        // 初始化工作
         ends = new ArrayList<Integer>();
         rows.clear();
         tempdfas = new ArrayList<List<Integer>>();
         tempI = new ArrayList<List<Integer>>();
         letter = getLetter(nfas);
-
         List<Integer> start = getE(NFA.calculateStart(nfas), nfas);
-
         tempI.add(start);
         tempdfas.add(start);
 
         int i = 0;
+        // 遍历NFA
         for (i = 0; i < tempI.size(); i++) {
-
+            //  存储一行结果
             List<List<Integer>> row = new ArrayList<List<Integer>>();
             row.add(tempI.get(i));
-
+            //  遍历字符
             for (int j = 0; j < letter.size(); j++) {
-                // i
+                // 获取闭包I
                 List<Integer> tI = getI(tempI.get(i), letter.get(j), nfas);
-                // E
+                // 根据闭包去遍历
                 List<Integer> tIE = getIE(tI, nfas);
 
                 int k;
                 for (k = 0; k < tempI.size(); k++) {
+                    // 查看该闭包是否重复
                     if (equalList(tempI.get(k), tIE)) {
                         break;
                     }
                 }
+                // 不存在则加入临时闭包
                 if (k == tempI.size()) {
                     tempI.add(tIE);
                 }
-
+                // DFA表新增一行
                 row.add(tIE);
 
                 int m = 0;
                 for (m = 0; m < tempdfas.size(); m++) {
+                    // 查看该闭包是否重复
                     if (equalList(tIE, tempdfas.get(m))) {
                         break;
                     }
                 }
+                // 不重复则加入dfa
                 if (m == tempdfas.size()) {
                     tempdfas.add(tIE);
                 }
             }
-
             rows.add(row);
         }
 
+        // 存储结果DFA
         List<FA> dfas = new ArrayList<FA>();
-
+        // 计算结束位置
         int end = NFA.calculateEnd(nfas);
-
+        // 遍历表格,转为等价DFA
         for (List<List<Integer>> row : rows) {
             for (int j = 0; j < letter.size(); j++) {
+                // 获取该字符所指向节点
                 int to = getListIndex(row.get(j + 1));
+                // 加入新节点
                 dfas.add(new FA(getListIndex(row.get(0)), letter.get(j),
                         to));
-
-
-                //计算end
+                // 计算end
                 if(row.get(j+1).contains(end)){
                     if(!ends.contains(to)){
                         ends.add(to);
@@ -96,7 +105,6 @@ public class DFA {
                 }
             }
         }
-
         return dfas;
     }
 
@@ -135,8 +143,7 @@ public class DFA {
     }
 
     // 获取I
-    public static List<Integer> getI(List<Integer> from, String ch,
-                                     List<FA> nfas) {
+    public static List<Integer> getI(List<Integer> from, String ch, List<FA> nfas) {
         List<Integer> list = new ArrayList<Integer>();
 
         for (Integer o : from) {
@@ -191,6 +198,7 @@ public class DFA {
         return letter;
     }
 
+    // 获取列表下标
     public static int getListIndex(List<Integer> list) {
         int i = 0;
         for (List<Integer> l : tempdfas) {
@@ -204,18 +212,9 @@ public class DFA {
 
     //获取DFA的结束符
     public static List<Integer> calculateEnd(){
-
         return ends;
     }
-    public static void main(String[] args) {
-        List<FA> nfas = NFA.parse("(a|b)*b");
 
-        List<FA> dfas = DFA.parse(nfas);
-
-        for (FA dfa : dfas) {
-            System.out.println(dfa);
-        }
-    }
     //字母判断
     public static boolean isLetter(String str) {
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("[a-zA-Z]+");

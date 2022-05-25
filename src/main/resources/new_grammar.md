@@ -191,36 +191,6 @@ bo_B -> AR bo_B' | !BO
 bo_B'-> d AR | 空
 AS -> c = expression
 
-First(expression)->{(,f,g,c,!}
-First(expression''')->{(,=}
-First(expression')->{d,&&,||，空}
-Follow(expression')->{}
-First(expression'')->{&&,||,空}
-Follow(expression')->{}
-First(AR)->{(,f,g,c}
-First(AR')->{+,-空}
-Follow(AR')->{Follow(AR)}
-First(ar_A)->{(,f,g,c}
-First(ar_A')->{*,/,%,空}
-Follow(ar_A')->{Follow(ar_A}
-First(ar_B)->{(,f,g,c}
-First(ar_C)->{c}
-First(ar_D)->{First(expression),空}
-Follow(ar_D)->{)}
-First(ar_E)->{First(expression}
-First(ar_E')->{,,空}
-Follow(ar_E')->{Follow(ar_E}
-First(RE)->{(,f,g,c}
-First(BO)->{(,f,g,c,!}
-First(BO')->{||,空}
-Follow(BO')->{Follow(BO)}
-First(bo_A)->{(,f,g,c,!}
-First(bo_A')->{&&,空}
-Follow(bo_A')->{Follow(bo_A)}
-First(bo_A)->{(,f,g,c,!}
-First(AS)->{c}
-
-
 Statement -> DE | EX
 First(Statement)->{const,e,空,c,if,for,while,do,return,{,}
 // DE -> de_A | de_B | 空

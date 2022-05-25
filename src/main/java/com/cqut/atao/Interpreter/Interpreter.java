@@ -20,15 +20,22 @@ import java.util.Map;
 @Data
 public class Interpreter {
 
-    private Function funcInfo;				// 函数信息表
+    private Function fun;				// 函数信息表
+
     private Activity curActivity;			// 当前活动
+
     private List<Variable> varStack;	    // 函数变量栈
+
     private List<Activity> activityStack;	// 活动记录栈
-    private String retVal;					// 返回值
+
+    private String returnValue;					// 返回值
+
     private TextArea textArea;              // 文本域
-    private StringBuilder sb;               // 输入和输出缓冲区
+
+    private StringBuilder buffer;               // 输入和输出缓冲区
+
     private List<String> paraList;          // 参数列表
-    private String returnVal;               // 返回值
+
 
     public Interpreter(TextArea text) {
         new ASCII();
@@ -38,7 +45,7 @@ public class Interpreter {
     // 解释程序
     public void interpreter(Map<String, Function> funcsInfoMap, List<Four> fourItemList) {
         // 初始化
-        sb = new StringBuilder();
+        buffer = new StringBuilder();
         activityStack = new ArrayList<>();
         varStack = new ArrayList<>();
         paraList = new ArrayList<>();
@@ -47,12 +54,12 @@ public class Interpreter {
         // 当前活动栈
         curActivity = activityStack.get(0);
         // main函数的函数信息
-        funcInfo = funcsInfoMap.get("main");
-        funcInfo.fillVars();
+        fun = funcsInfoMap.get("main");
+        fun.fillVars();
         // 将 main 函数所有变量压栈
-        for (String var : funcInfo.vars) {
-            String type = funcInfo.getVarInfo(var).getType();
-            varStack.add(funcInfo.getVarInfo(var));
+        for (String var : fun.vars) {
+//            String type = fun.getVarInfo(var).getType();
+            varStack.add(fun.getVarInfo(var));
         }
         // 解释执行
         while (!activityStack.isEmpty() && curActivity.now < fourItemList.size()) {
@@ -203,52 +210,26 @@ public class Interpreter {
                 case "j" :
                     curActivity.now = Integer.parseInt(result);
                     break;
-                case "jnz" :
-                    if (arg1Val.equals("1"))
-                        curActivity.now = Integer.parseInt(result) - 1;
-                    break;
-                case "jz" :
-                    if (arg1Val.equals("0"))
-                        curActivity.now = Integer.parseInt(result) - 1;
-                    break;
                 case "para":
                     paraList.add(arg1Val);
                     break;
-                case "scan" :
-                    String input = textArea.getText().substring(sb.length());
-                    while (input.isEmpty() || !input.contains("\n")) {
-                        input = textArea.getText().substring(sb.length());
-                    }
-                    input = input.replace("\n", "");
-                    if (resultType.equals("char")) {
-                        if (ASCII.map.containsKey(input))
-                            setVal(result, ASCII.map.get(input) + "");
-                        else
-                            setVal(result, (int)input.charAt(0) + "");
-                    } else if (resultType.equals("string")) {
-                        setVal(result, "\"" + input + "\"");
-                    } else {
-                        setVal(result, input);
-                    }
-                    sb = new StringBuilder(textArea.getText());
-                    break;
                 case "ret" :
-                    retVal = getVal(result);
-                    for (int i = 0; i < funcInfo.getVarTable().values().size(); i++)
+                    returnValue = getVal(result);
+                    for (int i = 0; i < fun.getVarTable().values().size(); i++)
                         varStack.remove(varStack.size()-1);
                     activityStack.remove(activityStack.size()-1);
                     if (!activityStack.isEmpty()) {
                         curActivity = activityStack.get(activityStack.size()-1);
-                        funcInfo = funcsInfoMap.get(curActivity.func);
+                        fun = funcsInfoMap.get(curActivity.func);
                     }
                     break;
                 case "call":
+                    // 系统调用打印结果
                     if ("write".equals(arg1Val)){
                         textArea.setText(paraList.toString());
-                    }else if (!curActivity.flag) {
+                    }else if (!curActivity.flag) {  // 自定义函数调用
                         curActivity.now--;
                         curActivity.flag = true;
-
                         // 获取实参
                         String[] args = new String[paraList.size()];
                         for (int i=0;i<paraList.size();++i){
@@ -263,34 +244,31 @@ public class Interpreter {
                         for(Variable variable: variables.values()){
                             variable.setVal(args[tmpK++]);
                         }
-                        // 存储返回值
-
-
+                        // 压栈
                         activityStack.add(new Activity(arg1Val, varStack.size(), funcsInfoMap.get(arg1Val).getPosition() - 1));
                         curActivity = activityStack.get(activityStack.size() - 1);
                         curActivity.start = varStack.size();
-                        funcInfo = funcsInfoMap.get(arg1Val);
-                        funcInfo.fillVars();
-                        for (String var : funcInfo.vars) {
-                            Variable v = funcInfo.getVarInfo(var);
+                        fun = funcsInfoMap.get(arg1Val);
+                        fun.fillVars();
+                        for (String var : fun.vars) {
+                            Variable v = fun.getVarInfo(var);
                             varStack.add(v);
                         }
-
-
                     } else {
                         curActivity.flag = false;
-                        setVal(result, retVal);
+                        setVal(result, returnValue);
                     }
                     break;
             }
         }
     }
 
+    // 根据参数名获取变量值
     private String getVal(String id) {
         if (id.isEmpty())
             return id;
-        if (funcInfo.vars.contains(id)) {
-            int index = funcInfo.vars.indexOf(id);
+        if (fun.vars.contains(id)) {
+            int index = fun.vars.indexOf(id);
             return varStack.get(curActivity.start + index).getVal();
         } else if (id.charAt(0) == '\'') {
             id = id.substring(1, id.length()-1);
@@ -306,8 +284,8 @@ public class Interpreter {
     private String getType(String id) {
         if (id.isEmpty())
             return id;
-        if (funcInfo.vars.contains(id)) {
-            int index = funcInfo.vars.indexOf(id);
+        if (fun.vars.contains(id)) {
+            int index = fun.vars.indexOf(id);
             return varStack.get(curActivity.start + index).getType();
         } else if (id.charAt(0) == '\'') {
             return "char";
@@ -320,7 +298,7 @@ public class Interpreter {
 
     // 设置值
     private void setVal(String id, String val) {
-        int index = funcInfo.vars.indexOf(id);
+        int index = fun.vars.indexOf(id);
         varStack.get(curActivity.start + index).setVal(val);
     }
 

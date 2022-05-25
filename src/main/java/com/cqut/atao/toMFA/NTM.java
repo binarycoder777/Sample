@@ -10,14 +10,17 @@ import java.util.List;
  * @version 1.0.0
  * @ClassName NTM.java
  * @Description 正规集->NFA->DFA->MFA
- * @createTime 2022年05月23日 09:02:00
+ * @createTime 2022年05月22日 09:02:00
  */
 public class NTM {
 
+    // 正规集->NFA
     private List<FA> nfa = new ArrayList<>();
 
+    // NFA->DFA
     private List<FA> dfa = new ArrayList<>();
 
+    // DFA->MFA
     private List<FA> mfa = new ArrayList<>();
 
     public void toNFA(String text){

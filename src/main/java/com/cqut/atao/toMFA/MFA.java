@@ -10,30 +10,33 @@ import java.util.List;
  * @version 1.0.0
  * @ClassName MFA.java
  * @Description 最小化状态机(DFA->MFA)
- * @createTime 2022年05月23日 09:00:00
+ * @createTime 2022年05月22日 09:00:00
  */
 public class MFA {
 
-
+    // 将DFA最小化
     public static List<FA> parse(List<FA> dfas) {
 
+        // 存取DFA下标
         List<Integer> indexs = getAllIndex(dfas);
 
+        // 获取开始节点
         List<Integer> starts = getStartIndex(indexs);
 
+        // 获取结束节点
         List<Integer> ends = DFA.calculateEnd();
 
+        // 字符
         List<String> letter = DFA.letter;
-        // System.out.println(indexs);
-        // System.out.println(starts);
-        // System.out.println(ends);
 
         // 计算等价的开始符号
         for (int i = 0; i < starts.size(); i++) {
             boolean flag = true;
+            // 从开始符号进行遍历
             for (int j = i + 1; j < starts.size(); j++) {
                 int start = starts.get(i);
                 int s = starts.get(j);
+                // 相同开始符号进行合并
                 for (int k = 0; k < letter.size(); k++) {
                     String ch = letter.get(k);
 
@@ -58,22 +61,21 @@ public class MFA {
 
                 // 成立
                 if (flag) {
-//					starts.remove(j);
-//					j--;
                     starts.remove(i);
                     break;
                 }
             }
         }
 
-        // System.out.println(starts);
 
         // 计算等价的结束符号
         for (int i = 0; i < ends.size(); i++) {
             boolean flag = true;
+            // 从结束符开始遍历
             for (int j = i + 1; j < ends.size(); j++) {
                 int end = ends.get(i);
                 int e = ends.get(j);
+                // 合并等价的结束符
                 for (int k = 0; k < letter.size(); k++) {
                     String ch = letter.get(k);
 
@@ -105,7 +107,6 @@ public class MFA {
                 }
             }
         }
-        //System.out.println(ends);
 
         List<Integer> allIndex = new ArrayList<Integer>();
         allIndex.addAll(starts);
@@ -117,10 +118,6 @@ public class MFA {
                 i--;
             }
         }
-
-//		for (int i = 0; i < dfas.size(); i++) {
-//			System.out.println(dfas.get(i));
-//		}
 
         return dfas;
     }
@@ -165,10 +162,6 @@ public class MFA {
             }
         }
         return starts;
-    }
-
-    public static void main(String[] args) {
-
     }
 
 }

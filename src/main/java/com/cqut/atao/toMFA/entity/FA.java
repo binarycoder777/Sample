@@ -5,7 +5,7 @@ package com.cqut.atao.toMFA.entity;
  * @version 1.0.0
  * @ClassName FA.java
  * @Description FA实体
- * @createTime 2022年05月23日 08:54:00
+ * @createTime 2022年05月22日 08:54:00
  */
 public class FA {
 

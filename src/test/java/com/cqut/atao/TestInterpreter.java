@@ -155,8 +155,6 @@ public class TestInterpreter {
 
         Interpreter interpreter = new Interpreter(null);
         interpreter.interpreter(functionTable,list);
-        // 打印结果
-        logger.error(interpreter.getSb().toString());
     }
 
 

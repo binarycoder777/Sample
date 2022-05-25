@@ -124,7 +124,7 @@ public class TestSyntax {
     @Test
     public void testProgramStatement() {
         String filePath = "/Users/weitao/Desktop/面试/项目/compler/src/main/resources/test/";
-        String text = ChairmanshipCoder.readFile(filePath+"test9.txt");
+        String text = ChairmanshipCoder.readFile(filePath+"test1.txt");
         System.out.println(text);
         lexer.lexicalAnalysis(text);
         List<Token> tokens = lexer.getTokens();
